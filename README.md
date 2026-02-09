@@ -1,1 +1,4 @@
 # BuzzBoard
+
+## Contributors 
+- Andrew Liu
