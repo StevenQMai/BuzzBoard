@@ -2,3 +2,4 @@
 
 ## Contributors 
 - Andrew Liu
+- Jack Tran
