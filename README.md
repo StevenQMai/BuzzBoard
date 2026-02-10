@@ -4,3 +4,4 @@
 - Andrew Liu
 - Jack Tran
 - Alaa AbuHelwa
+- Rohan Konanki
