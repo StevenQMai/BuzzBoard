@@ -55,3 +55,4 @@ The project is organized into two main directories: `client` for the frontend an
 - Ethan Zhang
 - Tommy Wu
 - Monia Hossain
+- Aiden Dowling
