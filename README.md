@@ -47,6 +47,7 @@ The project is organized into two main directories: `client` for the frontend an
 6. Start the client by running `npm run dev` in the `client` directory.
 
 ## Contributors 
+- Steven Mai
 - Andrew Liu
 - Jack Tran
 - Alaa AbuHelwa
