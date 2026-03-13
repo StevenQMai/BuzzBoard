@@ -1,0 +1,19 @@
+type EventCardProps = {
+  title: string;
+};
+
+export default function EventCard({ title }: EventCardProps) {
+  return (
+    <div className="w-full rounded border border-gray-200 bg-white p-4">
+      <div className="mb-4 h-40 rounded bg-gray-100" />
+
+      <h3 className="mb-5 text-2xl text-black text-center">{title}</h3>
+
+      <div className="flex justify-center">
+        <button className="rounded bg-gray-100 px-3 py-1 text-sm text-black transition hover:bg-gray-200">
+  Explore
+</button>
+      </div>
+    </div>
+  );
+}
