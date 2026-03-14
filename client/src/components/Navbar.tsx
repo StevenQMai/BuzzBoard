@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import FilterDropdown from "./FilterDropdown";
 
@@ -46,12 +47,12 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-3">
-        <button className="rounded border border-black px-5 py-2 text-sm transition hover:bg-gray-100">
+        <Link href="/login" className="rounded border border-black px-5 py-2 text-sm transition hover:bg-gray-100">
           Sign In
-        </button>
-        <button className="rounded bg-black px-5 py-2 text-sm text-white transition hover:bg-gray-800">
+        </Link>
+        <Link href="/login" className="rounded bg-black px-5 py-2 text-sm text-white transition hover:bg-gray-800">
           Sign Up
-        </button>
+        </Link>
       </div>
     </nav>
   );
