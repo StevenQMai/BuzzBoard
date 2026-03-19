@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <FirebaseClient />
+        {/* <FirebaseClient /> removed to prevent duplicate Firebase initialization */}
         {children}
       </body>
     </html>

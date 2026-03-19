@@ -2,21 +2,29 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 
-const MOCK_EVENTS = [
-  { id: 1, type: "Club Meeting", title: "Chess Club", date: "March 14", time: "3:30 PM", location: "Room 204" },
-  { id: 2, type: "School Event", title: "Spring Talent Show", date: "March 15", time: "6:00 PM", location: "Auditorium" },
-  { id: 3, type: "Club Meeting", title: "Debate Team", date: "March 16", time: "4:00 PM", location: "Room 112" },
-  { id: 4, type: "School Event", title: "Science Fair", date: "March 18", time: "9:00 AM", location: "Gymnasium" },
-  { id: 5, type: "Club Meeting", title: "Art Club", date: "March 19", time: "3:30 PM", location: "Room 301" },
-];
+type Event = {
+  id: string;
+  Approved: boolean;
+  Category: string;
+  Created_at: string;
+  Date: string;
+  Description: string;
+  End_time: string;
+  Location: string;
+  Organization: string;
+  Start_time: string;
+  Title: string;
+};
 
-export default function HomePage() {
+export default function DashboardPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [filter, setFilter] = useState("All");
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,14 +37,23 @@ export default function HomePage() {
     return () => unsubscribe();
   }, [router]);
 
+  useEffect(() => {
+    async function fetchEvents() {
+      const snapshot = await getDocs(collection(db, "events"));
+      const parsed: Event[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Event));
+      setEvents(parsed);
+    }
+    fetchEvents();
+  }, []);
+
   const handleSignOut = async () => {
     await signOut(auth);
     router.push("/login");
   };
 
   const filtered = filter === "All"
-    ? MOCK_EVENTS
-    : MOCK_EVENTS.filter((e) => e.type === filter);
+    ? events
+    : events.filter((e) => e.Category === filter);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -76,23 +93,19 @@ export default function HomePage() {
         <div className="space-y-4">
           {filtered.map((event) => (
             <div key={event.id} className="bg-white rounded-xl shadow-sm p-5 flex gap-4 items-start">
-              <div className={`mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                event.type === "School Event" ? "bg-blue-500" : "bg-purple-500"
-              }`} />
+              <div className="mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0 bg-blue-500" />
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">{event.title}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    event.type === "School Event"
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-purple-100 text-purple-700"
-                  }`}>
-                    {event.type}
+                  <h3 className="font-semibold text-gray-900">{event.Title}</h3>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                    {event.Category}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  {event.date} · {event.time} · {event.location}
+                  {event.Date} · {event.Start_time} - {event.End_time} · {event.Location}
                 </p>
+                <p className="text-xs text-gray-400 mt-1">{event.Organization}</p>
+                <p className="text-xs text-gray-400 mt-1">{event.Description}</p>
               </div>
             </div>
           ))}
