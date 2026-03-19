@@ -16,7 +16,13 @@ const startServer = async () => {
         // Initialize Firebase
         await initializeFirebase();
 
-        // Routes
+
+        // Root route
+        app.get('/', (req, res) => {
+            res.send('BuzzBoard API is running!');
+        });
+
+        // API routes
         app.use('/api', routes);
 
         // Start the server
