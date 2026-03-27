@@ -4,9 +4,14 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
-        pathname: '/**',
+        hostname: 'example.com',
       },
     ],
+  },
+  turbopack: {
+    root: __dirname,
+    resolveAlias: {
+      tailwindcss: require.resolve('tailwindcss'),
+    },
   },
 };
