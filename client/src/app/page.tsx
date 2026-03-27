@@ -1,3 +1,4 @@
+//original code//
 import { Navbar, Hero, EventGrid } from "@/components";
 
 export default function Home() {

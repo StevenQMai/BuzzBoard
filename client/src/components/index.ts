@@ -1,3 +1,4 @@
+//original code//
 export { default as Navbar } from "./Navbar";
 export { default as Hero } from "./Title";
 export { default as EventCard } from "./EventCard";

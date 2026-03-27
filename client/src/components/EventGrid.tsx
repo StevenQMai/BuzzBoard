@@ -1,3 +1,4 @@
+//original code//
 import EventCard from "./EventCard";
 
 const events = [

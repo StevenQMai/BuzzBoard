@@ -1,3 +1,4 @@
+//original code//
 type EventCardProps = {
   title: string;
 };
