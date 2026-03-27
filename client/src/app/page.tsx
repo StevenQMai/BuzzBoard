@@ -1,11 +1,5 @@
-import { Navbar, Hero, EventGrid } from "@/components";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-[#f8f8f8]">
-      <Navbar />
-      <Hero />
-      <EventGrid />
-    </main>
-  );
+export default function Root() {
+  redirect("/home");
 }
