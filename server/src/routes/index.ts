@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { getFirebaseAuth, getFirebaseDB } from '../config/database';
+import { getEvents, createEvent } from '../controllers';
 
 const router = Router();
 
-// TEST: verify firebase auth and realtime db are reachable
 router.get('/health', async (req: Request, res: Response) => {
     try {
         await getFirebaseAuth().listUsers(1);
@@ -15,6 +15,7 @@ router.get('/health', async (req: Request, res: Response) => {
     }
 });
 
-// Define your routes here
+router.get('/events', getEvents);
+router.post('/events', createEvent);
 
 export default router;
