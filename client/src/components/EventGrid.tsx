@@ -27,12 +27,7 @@ export default async function EventGrid() {
       {events.map((event) => (
         <EventCard
           key={event.id}
-          title={event.title}
-          type={event.type}
-          date={event.date}
-          time={event.time}
-          location={event.location}
-          imageUrl={event.imageUrl}
+          Title={event.Title}
         />
       ))}
     </section>

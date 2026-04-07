@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -19,9 +20,9 @@ export default function Hero() {
         Please Sign In to Create an Event
       </p>
 
-      <button className="rounded border border-black px-5 py-2 text-sm transition hover:bg-gray-100">
-  Sign In
-</button>
+      <Link href="/login" className="rounded border border-black px-5 py-2 text-sm transition hover:bg-gray-100">
+        Sign In
+      </Link>
     </section>
   );
 }
