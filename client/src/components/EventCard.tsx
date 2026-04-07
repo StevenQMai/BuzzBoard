@@ -1,6 +1,6 @@
-type EventCardProps = {
-  title: string;
-};
+import { Event } from '@/lib/utils';
+
+type EventCardProps = Pick<Event, 'title' | 'type' | 'date' | 'time' | 'location' | 'imageUrl'>;
 
 export default function EventCard({ title }: EventCardProps) {
   return (
@@ -11,8 +11,8 @@ export default function EventCard({ title }: EventCardProps) {
 
       <div className="flex justify-center">
         <button className="rounded bg-gray-100 px-3 py-1 text-sm text-black transition hover:bg-gray-200">
-  Explore
-</button>
+          Explore
+        </button>
       </div>
     </div>
   );
