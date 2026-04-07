@@ -1,10 +1,13 @@
 export interface Event {
   id: string;
-  title: string;
-  type: "School Event" | "Club Meeting";
-  date: string;
-  time: string;
-  location: string;
-  description?: string;
-  imageUrl?: string;
+  Title: string;
+  Category: string;
+  Date: string;
+  Start_time: string;
+  End_time: string;
+  Location: string;
+  Organization?: string;
+  Description?: string;
+  Approved?: boolean;
+  Created_at?: string;
 }
