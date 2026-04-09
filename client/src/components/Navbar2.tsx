@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import FilterDropdown from "./FilterDropdown";
 
@@ -45,21 +44,6 @@ export default function Navbar({ search = "", setSearch }: NavbarProps) {
 
           {showFilters && <FilterDropdown />}
         </div>
-      </div>
-
-      <div className="flex items-center gap-4">
-        <Link
-          href="/login"
-          className="rounded-md border border-black px-6 py-3 text-sm transition hover:bg-gray-100"
-        >
-          Sign In
-        </Link>
-        <Link
-          href="/login"
-          className="rounded-md bg-black px-6 py-3 text-sm text-white transition hover:bg-gray-800"
-        >
-          Sign Up
-        </Link>
       </div>
     </nav>
   );
