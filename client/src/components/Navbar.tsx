@@ -48,6 +48,8 @@ export default function Navbar({ search = "", setSearch }: NavbarProps) {
             <input
               type="text"
               placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch?.(e.target.value)}
               className="h-11 flex-1 rounded-xl border-2 border-gray-400 bg-white px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111] dark:text-white dark:placeholder:text-gray-400"
             />
 
