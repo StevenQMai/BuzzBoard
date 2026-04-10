@@ -34,7 +34,7 @@ export default function SignupPage() {
         photoURL: profilePicture || "",
       });
 
-      router.push("/home");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
     }
