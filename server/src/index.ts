@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import routes from './routes';
-import { initializeFirebase, getFirebaseDB } from './config/database';
+import { initializeFirebase } from './config/database';
 import { corsMiddleware } from './middleware';
 // import { Event } from './models'; // uncomment if re-enabling seed
 
