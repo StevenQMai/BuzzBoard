@@ -11,13 +11,13 @@
   "dependencies": {
     "autoprefixer": "latest",
     "clsx": "^2.1.0",
-    "firebase": "latest",
+    "firebase": "^12.11.0",
     "next": "latest",
+    "postcss": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "tailwindcss": "latest",
-    "postcss": "latest",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss": "latest"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.1",

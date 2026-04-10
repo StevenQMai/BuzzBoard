@@ -8,7 +8,12 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import FilterDropdown from "./FilterDropdown";
 import DarkModeToggle from "./DarkModeToggle";
 
-export default function Navbar() {
+type NavbarProps = {
+  search?: string;
+  setSearch?: (value: string) => void;
+};
+
+export default function Navbar({ search = "", setSearch }: NavbarProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
