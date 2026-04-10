@@ -23,4 +23,5 @@ export const initializeFirebase = async () => {
 };
 
 export const getFirebaseDB = () => admin.database();
+export const getFirebaseFirestore = () => admin.firestore();
 export const getFirebaseAuth = () => admin.auth();
