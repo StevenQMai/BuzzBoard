@@ -90,7 +90,7 @@ export default function Navbar({ search = "", setSearch }: NavbarProps) {
           <div className="flex items-center gap-3">
             <DarkModeToggle />
 
-            <div className="flex items-center gap-3 rounded-xl border border-gray-300 px-3 py-2 transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111]">
+            <Link href="/dashboard" className="flex items-center gap-3 rounded-xl border border-gray-300 px-3 py-2 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-600 dark:bg-[#111111] dark:hover:bg-[#222222]">
               <img
                 src={user.photoURL || "https://via.placeholder.com/40?text=U"}
                 alt="Profile"
@@ -99,7 +99,7 @@ export default function Navbar({ search = "", setSearch }: NavbarProps) {
               <span className="text-sm font-medium text-black dark:text-white">
                 {fullName}
               </span>
-            </div>
+            </Link>
 
             <button
               onClick={() => signOut(auth)}
