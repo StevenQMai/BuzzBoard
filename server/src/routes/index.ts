@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getFirebaseAuth, getFirebaseFirestore } from '../config/database';
-import { getEvents, createEvent } from '../controllers';
+import { getEvents, createEvent, getEventById } from '../controllers';
 
 const router = Router();
 
@@ -15,6 +15,7 @@ router.get('/health', async (req: Request, res: Response) => {
 });
 
 router.get('/events', getEvents);
+router.get('/events/:id', getEventById);
 router.post('/events', createEvent);
 
 export default router;

@@ -34,6 +34,8 @@ export default function AddEventButton({ onEventAddedAction }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const u = auth.currentUser;
+    if (!u) return;
     setAdding(true);
     try {
       const res = await fetch(
@@ -45,6 +47,8 @@ export default function AddEventButton({ onEventAddedAction }: Props) {
             ...form,
             Approved: false,
             Created_at: new Date().toISOString(),
+            Host_display_name:
+              u.displayName || u.email?.split("@")[0] || "Student",
           }),
         }
       );

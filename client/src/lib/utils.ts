@@ -12,6 +12,7 @@ export interface Event {
   Description?: string;
   Approved?: boolean;
   Created_at?: string;
+  Host_display_name?: string;
 }
 
 export async function fetchEvents(type?: string): Promise<Event[]> {
@@ -20,5 +21,14 @@ export async function fetchEvents(type?: string): Promise<Event[]> {
 
   const res = await fetch(url.toString(), { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch events');
+  return res.json();
+}
+
+export async function fetchEventById(id: string): Promise<Event> {
+  const res = await fetch(`${API_BASE_URL}/api/events/${id}`, {
+    cache: 'no-store',
+  });
+  if (res.status === 404) throw new Error('Not found');
+  if (!res.ok) throw new Error('Failed to fetch event');
   return res.json();
 }

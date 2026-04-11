@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
 export const metadata: Metadata = {
-  title: "BuzzBoard",
-  description: "Team collaboration platform",
+  title: "BuzzBoard — Georgia Tech events",
+  description:
+    "Discover and share small-scale campus events—study sessions, hangouts, and more.",
 };
 
 export default function RootLayout({
@@ -13,7 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-white text-black transition-colors duration-300 dark:bg-[#111111] dark:text-white">
+      <body
+        className={`${inter.variable} font-sans bg-[#fafafa] text-zinc-900 antialiased transition-colors duration-300 dark:bg-[#111111] dark:text-zinc-50`}
+      >
         {children}
       </body>
     </html>

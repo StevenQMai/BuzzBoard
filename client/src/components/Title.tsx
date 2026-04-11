@@ -20,29 +20,47 @@ export default function Hero() {
   if (user) return null;
 
   return (
-    <section className="flex flex-col items-center pb-12 pt-14 text-center transition-colors duration-300">
+    <section className="flex flex-col items-center px-4 pb-16 pt-16 text-center transition-colors duration-300">
       <Image
         src="/buzz.png"
         alt="Georgia Tech Buzz logo"
         width={120}
         height={120}
-        className="mb-4 object-contain"
+        className="mb-6 object-contain"
       />
 
-      <h1 className="mb-2 text-6xl font-bold text-black dark:text-white">
-        Welcome to BuzzBoard
+      <h1 className="mb-4 max-w-2xl text-4xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
+        Campus moments, all in one place
       </h1>
 
-      <p className="mb-6 text-2xl text-gray-500 dark:text-gray-400">
-        Please Sign In to Create an Event
+      <p className="max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+        Discover study sessions, hangouts, and small gatherings around campus.
+        Browse everything below. When you&apos;re ready to host,{" "}
+        <Link
+          href="/login"
+          className="font-medium text-zinc-800 underline decoration-zinc-300 underline-offset-2 transition hover:decoration-zinc-500 dark:text-zinc-200 dark:decoration-zinc-600 dark:hover:decoration-zinc-400"
+        >
+          sign in
+        </Link>{" "}
+        or{" "}
+        <Link
+          href="/signup"
+          className="font-medium text-zinc-800 underline decoration-zinc-300 underline-offset-2 transition hover:decoration-zinc-500 dark:text-zinc-200 dark:decoration-zinc-600 dark:hover:decoration-zinc-400"
+        >
+          sign up
+        </Link>
+        .
       </p>
 
-      <Link
-        href="/login"
-        className="rounded border border-black px-5 py-2 text-sm text-black transition hover:bg-gray-100 dark:border-white dark:text-white dark:hover:bg-[#222222]"
+      <a
+        href="#events-feed"
+        className="hero-feed-cue mt-10 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 no-underline transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
-        Sign In
-      </Link>
+        Explore upcoming events
+        <span aria-hidden className="text-base leading-none">
+          ↓
+        </span>
+      </a>
     </section>
   );
 }

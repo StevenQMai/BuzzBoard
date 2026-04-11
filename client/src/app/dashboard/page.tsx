@@ -13,13 +13,29 @@ export default function DashboardPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push("/login");
-      }
-    });
+    let unsub: (() => void) | undefined;
+    let cancelled = false;
 
-    return () => unsubscribe();
+    const subscribe = () => {
+      unsub = onAuthStateChanged(auth, (user) => {
+        if (!user) router.push("/login");
+      });
+    };
+
+    // Wait for persisted session; subscribing too early can fire null and bounce to /login.
+    auth
+      .authStateReady()
+      .then(() => {
+        if (!cancelled) subscribe();
+      })
+      .catch(() => {
+        if (!cancelled) subscribe();
+      });
+
+    return () => {
+      cancelled = true;
+      unsub?.();
+    };
   }, [router]);
 
   useEffect(() => {

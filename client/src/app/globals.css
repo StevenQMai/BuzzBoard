@@ -1,2 +1,24 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Tailwind v4 is CSS-first; custom theme in tailwind.config.js is not applied unless @config is set.
+   Define the hero “explore events” idle bounce here so it always runs. */
+@keyframes hero-idle-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.hero-feed-cue {
+  animation: hero-idle-bounce 1.45s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-feed-cue {
+    animation: none;
+  }
+}
