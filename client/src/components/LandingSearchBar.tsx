@@ -38,12 +38,12 @@ export default function LandingSearchBar({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-400 px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+        className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-500 dark:text-white dark:placeholder:text-gray-400"
       />
       <button
         type="button"
         aria-label="Search"
-        className="glass-surface inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+        className="glass-surface inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-gray-500 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
       >
         <SearchIcon className="h-6 w-6" />
       </button>

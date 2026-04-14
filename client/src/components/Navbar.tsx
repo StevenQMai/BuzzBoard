@@ -73,17 +73,17 @@ export default function Navbar({
   const fullName = user?.displayName || "User";
 
   return (
-    <div className="px-4 pt-4">
+    <div className="sticky top-0 z-40 px-4 pt-4 pb-2">
       <nav className="glass-surface mx-auto flex w-full max-w-7xl items-center justify-between rounded-[28px] border-2 border-gray-400 px-6 py-3 transition-colors duration-300 dark:border-gray-600">
-        <Link href="/home" className="flex shrink-0 items-center gap-3">
+        <Link href="/home" className="flex shrink-0 items-center gap-2.5">
           <Image
-            src="/gt-logo.png"
-            alt="Georgia Tech logo"
-            width={42}
-            height={42}
-            className="rounded-md object-contain"
+            src="/buzz.png"
+            alt="Georgia Tech Buzz mascot"
+            width={40}
+            height={40}
+            className="object-contain drop-shadow-md"
           />
-          <span className="text-3xl font-semibold text-black dark:text-white">
+          <span className="font-logo logo-stroke bg-linear-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-3xl text-transparent drop-shadow-sm dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400">
             BuzzBoard
           </span>
         </Link>
@@ -148,11 +148,17 @@ export default function Navbar({
               href="/dashboard"
               className="inline-flex h-10 max-w-[200px] shrink-0 items-center gap-2 rounded-xl border-2 border-gray-400 px-3 text-sm leading-none transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
             >
-              <img
-                src={user.photoURL || "https://via.placeholder.com/24?text=U"}
-                alt=""
-                className="h-6 w-6 shrink-0 rounded-full object-cover"
-              />
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt=""
+                  className="h-6 w-6 shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-300 text-xs font-semibold uppercase text-zinc-700 dark:bg-zinc-600 dark:text-zinc-100">
+                  {(user.email ?? "U").charAt(0)}
+                </span>
+              )}
               <span className="min-w-0 truncate font-medium text-black dark:text-white">
                 {fullName}
               </span>

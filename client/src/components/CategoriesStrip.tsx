@@ -23,7 +23,7 @@ export default function CategoriesStrip({
 }: Props) {
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <div className="glass-surface rounded-[28px] border-2 border-gray-400 px-4 py-3 transition-colors duration-300 dark:border-gray-600">
+      <div className="glass-surface rounded-[28px] border-2 border-gray-500 px-4 py-3 transition-colors duration-300 dark:border-gray-500">
         <div className="flex flex-wrap items-center justify-center gap-2">
           {categories.map((c) => {
             const isActive = c === active;
@@ -36,7 +36,7 @@ export default function CategoriesStrip({
                   "rounded-full px-4 py-2 text-sm transition",
                   isActive
                     ? "bg-black text-white dark:bg-white dark:text-black"
-                    : "border border-gray-300 bg-transparent text-zinc-800 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]",
+                    : "border border-gray-300 bg-transparent text-zinc-800 hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]",
                 ].join(" ")}
               >
                 {c}

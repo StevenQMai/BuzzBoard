@@ -136,12 +136,12 @@ export default function EventQuickViewModal({
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="glass-surface-strong relative w-full max-w-4xl rounded-[28px] border-2 border-gray-400 shadow-2xl outline-none transition-colors duration-300 dark:border-gray-600"
+        className="glass-surface-strong relative w-full max-w-4xl rounded-[28px] border-2 border-gray-500 shadow-2xl outline-none transition-colors duration-300 dark:border-gray-500"
       >
         <button
           type="button"
           onClick={onClose}
-          className="glass-surface absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+          className="glass-surface absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-xl border-2 border-gray-500 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
           aria-label="Close quick view"
         >
           <CloseIcon className="h-5 w-5" />
@@ -149,19 +149,19 @@ export default function EventQuickViewModal({
 
         <div className="grid gap-6 px-6 pb-6 pt-6 md:grid-cols-[320px_1fr] md:items-stretch">
           <div className="flex flex-col">
-            <div className="glass-surface flex aspect-4/3 w-full items-center justify-center rounded-2xl border-2 border-gray-400 text-sm text-zinc-500 dark:border-gray-600 dark:text-zinc-400">
+            <div className="glass-surface flex aspect-4/3 w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
               pic
             </div>
             <div className="mt-4 flex gap-3">
               <button
                 type="button"
-                className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-400 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+                className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
               >
                 RSVP
               </button>
               <button
                 type="button"
-                className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-400 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+                className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
               >
                 Add to Calendar
               </button>
@@ -176,7 +176,7 @@ export default function EventQuickViewModal({
               {event.Title}
             </p>
 
-            <div className="glass-surface mt-4 flex-1 rounded-2xl border-2 border-gray-400 p-4 text-sm text-zinc-700 dark:border-gray-600 dark:text-zinc-200">
+            <div className="glass-surface mt-4 flex-1 rounded-2xl border-2 border-gray-500 p-4 text-sm text-zinc-700 dark:border-gray-500 dark:text-zinc-200">
               <div className="rounded-2xl border border-zinc-200 bg-white/55 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
                 <p className="font-medium text-zinc-900 dark:text-white">
                   {formatEventDateHeading(event)} · {formatTimeRange(event)}
@@ -187,7 +187,7 @@ export default function EventQuickViewModal({
                 </p>
 
                 <div className="mt-4 flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-gray-300 bg-white/65 px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111]/40 dark:text-zinc-200">
+                  <span className="rounded-full border border-gray-300 bg-white/65 px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:bg-[#111111]/40 dark:text-zinc-200">
                     {event.Category || "categories"}
                   </span>
                   {rel && !past ? (
@@ -204,12 +204,12 @@ export default function EventQuickViewModal({
             </div>
 
             <div className="mt-4 flex gap-3">
-              <div className="glass-surface flex h-11 flex-1 items-center justify-center rounded-2xl border-2 border-gray-400 px-4 text-center text-sm text-zinc-600 dark:border-gray-600 dark:text-zinc-300">
+              <div className="glass-surface flex h-11 flex-1 items-center justify-center rounded-2xl border-2 border-gray-500 px-4 text-center text-sm text-zinc-600 dark:border-gray-500 dark:text-zinc-300">
                 Categories
               </div>
               <Link
                 href={`/events/${event.id}`}
-                className="glass-surface flex h-11 flex-1 items-center justify-center rounded-2xl border-2 border-gray-400 px-4 text-center text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+                className="glass-surface flex h-11 flex-1 items-center justify-center rounded-2xl border-2 border-gray-500 px-4 text-center text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
               >
                 View full details
               </Link>

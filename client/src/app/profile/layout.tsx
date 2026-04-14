@@ -21,15 +21,17 @@ export default function ProfileLayout({
     <div className="min-h-screen bg-[#f8f8f8]">
       {/* Header bar – same logo and UI as main Navbar */}
       <header className="flex items-center justify-between border-b border-gray-200 bg-white px-8 py-4">
-        <Link href="/" className="flex items-center gap-3 hover:opacity-90">
+        <Link href="/" className="flex items-center gap-2.5 hover:opacity-90">
           <Image
-            src="/gt-logo.png"
-            alt="Georgia Tech logo"
-            width={42}
-            height={42}
-            className="object-contain"
+            src="/buzz.png"
+            alt="Georgia Tech Buzz mascot"
+            width={40}
+            height={40}
+            className="object-contain drop-shadow-md"
           />
-          <span className="text-3xl font-semibold text-black">BuzzBoard</span>
+          <span className="font-logo logo-stroke bg-linear-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-3xl text-transparent drop-shadow-sm dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400">
+            BuzzBoard
+          </span>
         </Link>
 
         <div className="flex flex-1 items-center justify-center gap-3 px-8">

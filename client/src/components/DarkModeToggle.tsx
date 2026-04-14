@@ -67,7 +67,7 @@ export default function DarkModeToggle() {
       type="button"
       onClick={toggleDarkMode}
       aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-zinc-100 dark:hover:bg-[#222222]"
+      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-500 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-zinc-100 dark:hover:bg-[#222222]"
     >
       {darkMode ? (
         <SunIcon className="h-5 w-5" />
