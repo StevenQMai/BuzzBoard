@@ -51,9 +51,14 @@ function ChevronDownIcon({ className }: { className?: string }) {
 type NavbarProps = {
   search?: string;
   setSearch?: (value: string) => void;
+  showSearch?: boolean;
 };
 
-export default function Navbar({ search = "", setSearch }: NavbarProps) {
+export default function Navbar({
+  search = "",
+  setSearch,
+  showSearch = true,
+}: NavbarProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -83,39 +88,41 @@ export default function Navbar({ search = "", setSearch }: NavbarProps) {
           </span>
         </Link>
 
-        <div className="flex min-w-0 flex-1 items-center justify-center px-6">
-          <div className="flex w-full min-w-0 max-w-xl items-center gap-3">
-            <input
-              type="text"
-              placeholder="Search"
-              value={search}
-              onChange={(e) => setSearch?.(e.target.value)}
-              className="h-11 flex-1 rounded-xl border-2 border-gray-400 bg-white px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111] dark:text-white dark:placeholder:text-gray-400"
-            />
+        {showSearch && (
+          <div className="flex min-w-0 flex-1 items-center justify-center px-6">
+            <div className="flex w-full min-w-0 max-w-xl items-center gap-3">
+              <input
+                type="text"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => setSearch?.(e.target.value)}
+                className="h-11 flex-1 rounded-xl border-2 border-gray-400 bg-white px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111] dark:text-white dark:placeholder:text-gray-400"
+              />
 
-            <button
-              type="button"
-              aria-label="Search"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
-            >
-              <SearchIcon className="h-6 w-6" />
-            </button>
-
-            <div className="relative">
               <button
                 type="button"
-                aria-expanded={showFilters}
-                aria-label="Open filters"
-                onClick={() => setShowFilters((prev) => !prev)}
+                aria-label="Search"
                 className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
               >
-                <ChevronDownIcon className="h-6 w-6" />
+                <SearchIcon className="h-6 w-6" />
               </button>
 
-              {showFilters && <FilterDropdown />}
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-expanded={showFilters}
+                  aria-label="Open filters"
+                  onClick={() => setShowFilters((prev) => !prev)}
+                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+                >
+                  <ChevronDownIcon className="h-6 w-6" />
+                </button>
+
+                {showFilters && <FilterDropdown />}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {!user ? (
           <div className="relative z-20 flex shrink-0 items-center gap-3">
