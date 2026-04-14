@@ -9,6 +9,7 @@ import {
 } from "@/lib/eventTime";
 import EventCard from "./EventCard";
 import StartingSoonStrip from "./StartingSoonStrip";
+import EventQuickViewModal from "./EventQuickViewModal";
 
 type Props = {
   search?: string;
@@ -30,6 +31,7 @@ function matchesSearch(e: Event, q: string): boolean {
 export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState(false);
+  const [quickViewEvent, setQuickViewEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents()
@@ -97,13 +99,23 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
               </h2>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {rest.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onQuickView={setQuickViewEvent}
+                  />
                 ))}
               </div>
             </>
           )}
         </div>
       </section>
+
+      <EventQuickViewModal
+        open={quickViewEvent !== null}
+        event={quickViewEvent}
+        onClose={() => setQuickViewEvent(null)}
+      />
     </>
   );
 }

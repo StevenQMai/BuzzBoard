@@ -10,9 +10,39 @@ import {
 type Props = {
   event: Event;
   variant?: "default" | "soon";
+  onQuickView?: (event: Event) => void;
 };
 
-export default function EventCard({ event, variant = "default" }: Props) {
+function EyeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      className={className}
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+      />
+    </svg>
+  );
+}
+
+export default function EventCard({
+  event,
+  variant = "default",
+  onQuickView,
+}: Props) {
   const showToday = shouldShowTodayTimeBadge(event);
   const rel = showToday ? null : relativeStartsIn(event);
   const isSoon = variant === "soon";
@@ -23,7 +53,7 @@ export default function EventCard({ event, variant = "default" }: Props) {
         isSoon ? "ring-1 ring-amber-500/20 dark:ring-amber-400/15" : ""
       }`}
     >
-      <Link href={`/events/${event.id}`} className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="mb-3 flex items-start justify-between gap-2">
           <span className="inline-flex max-w-[70%] items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
             {event.Category || "Event"}
@@ -41,9 +71,25 @@ export default function EventCard({ event, variant = "default" }: Props) {
           )}
         </div>
 
-        <h3 className="mb-2 line-clamp-2 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          {event.Title}
-        </h3>
+        <div className="mb-2 flex items-start justify-between gap-3">
+          <h3 className="min-w-0 flex-1">
+            <Link
+              href={`/events/${event.id}`}
+              className="line-clamp-2 text-lg font-semibold tracking-tight text-zinc-900 hover:underline dark:text-zinc-50"
+            >
+              {event.Title}
+            </Link>
+          </h3>
+
+          <button
+            type="button"
+            onClick={() => onQuickView?.(event)}
+            aria-label={`Quick view ${event.Title}`}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-200 dark:hover:bg-zinc-900"
+          >
+            <EyeIcon className="h-5 w-5" />
+          </button>
+        </div>
 
         <p className="mb-1 text-sm text-zinc-500 dark:text-zinc-400">
           {formatEventDateHeading(event)}
@@ -61,11 +107,14 @@ export default function EventCard({ event, variant = "default" }: Props) {
               ? `Hosted by ${event.Host_display_name}`
               : event.Organization || "Campus"}
           </span>
-          <span className="text-sm font-medium text-zinc-900 group-hover:underline dark:text-white">
+          <Link
+            href={`/events/${event.id}`}
+            className="text-sm font-medium text-zinc-900 hover:underline dark:text-white"
+          >
             View
-          </span>
+          </Link>
         </div>
-      </Link>
+      </div>
     </article>
   );
 }

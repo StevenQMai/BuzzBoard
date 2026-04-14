@@ -66,79 +66,112 @@ export default function EventDetailPage() {
   return (
     <main className="min-h-screen bg-[#fafafa] dark:bg-[#111111]">
       <Navbar />
-      <article className="mx-auto max-w-2xl px-6 pb-20 pt-8">
+      <article className="mx-auto max-w-7xl px-4 pb-16 pt-8 lg:px-8">
         <button
           type="button"
           onClick={() => router.back()}
-          className="mb-8 text-sm font-medium text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+          className="mb-6 text-sm font-medium text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           ← Back
         </button>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-            {event.Category}
-          </span>
-          {rel && !past && (
-            <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
-              {rel}
-            </span>
-          )}
-          {past && (
-            <span className="text-xs font-medium text-zinc-400">Ended</span>
-          )}
+        <div className="rounded-[28px] border-2 border-gray-400 bg-white p-6 shadow-md transition-colors duration-300 dark:border-gray-600 dark:bg-[#1a1a1a]">
+          <div className="grid gap-8 lg:min-h-[70vh] lg:grid-cols-[360px_1fr] lg:items-stretch">
+            <div className="flex flex-col gap-6">
+              <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 bg-[#fafafa] text-sm text-zinc-500 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-400">
+                pic
+              </div>
+
+              <div className="flex flex-col">
+                <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 bg-[#fafafa] text-sm text-zinc-500 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-400">
+                  QR Code
+                </div>
+                <p className="mt-4 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                  RSVP Link:
+                </p>
+                <p className="mt-1 break-all text-sm text-zinc-500 dark:text-zinc-400">
+                  (placeholder)
+                </p>
+              </div>
+            </div>
+
+            <div className="flex min-w-0 flex-col">
+              <h1 className="pr-2 text-5xl font-semibold leading-tight tracking-tight text-zinc-900 wrap-break-word dark:text-white">
+                {event.Title}
+              </h1>
+
+              <div className="mt-8 flex-1 rounded-2xl border-2 border-gray-400 bg-white p-5 text-sm text-zinc-700 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                <p className="font-medium text-zinc-900 dark:text-white">
+                  {formatEventDateHeading(event)} · {formatTimeRange(event)}
+                </p>
+                <p className="mt-2">
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-zinc-300 underline-offset-4 transition hover:decoration-zinc-600 dark:decoration-zinc-600 dark:hover:decoration-zinc-300"
+                  >
+                    {event.Location}
+                  </a>
+                </p>
+                <p className="mt-2 text-zinc-600 dark:text-zinc-300">
+                  {event.Description || "description/time/place"}
+                </p>
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                    {event.Category || "categories"}
+                  </span>
+                  {rel && !past ? (
+                    <span className="text-xs font-semibold text-amber-500">
+                      {rel}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-medium text-zinc-400">
+                      {past ? "Ended" : ""}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  className="h-11 rounded-xl border-2 border-gray-400 bg-white px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#222222]"
+                >
+                  Add to Calendar
+                </button>
+                <button
+                  type="button"
+                  className="h-11 rounded-xl border-2 border-gray-400 bg-white px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#222222]"
+                >
+                  RSVP
+                </button>
+              </div>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                  {event.Category || "Ex Tag"}
+                </span>
+                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                  Ex Tag
+                </span>
+                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                  Ex Tag
+                </span>
+              </div>
+
+              <div className="mt-auto pt-10 text-right">
+                <Link
+                  href="/home"
+                  className="text-sm font-medium text-zinc-900 underline dark:text-white"
+                >
+                  Back to home
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-          {event.Title}
-        </h1>
-
-        <dl className="mt-8 space-y-4 border-y border-zinc-200 py-8 dark:border-zinc-800">
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              When
-            </dt>
-            <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-              {formatEventDateHeading(event)} · {formatTimeRange(event)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              Where
-            </dt>
-            <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-zinc-300 underline-offset-4 transition hover:decoration-zinc-600 dark:decoration-zinc-600 dark:hover:decoration-zinc-300"
-              >
-                {event.Location}
-              </a>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              Host
-            </dt>
-            <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-              {event.Host_display_name ||
-                event.Organization ||
-                "Campus community"}
-            </dd>
-          </div>
-        </dl>
-
-        {event.Description && (
-          <section className="mt-8">
-            <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              Details
-            </h2>
-            <p className="mt-2 whitespace-pre-wrap text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {event.Description}
-            </p>
-          </section>
-        )}
       </article>
     </main>
   );
