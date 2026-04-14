@@ -70,20 +70,20 @@ export default function EventDetailPage() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="mb-6 text-sm font-medium text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+          className="glass-surface mb-6 rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-zinc-500 transition hover:text-zinc-800 dark:border-gray-600 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           ← Back
         </button>
 
-        <div className="rounded-[28px] border-2 border-gray-400 bg-white p-6 shadow-md transition-colors duration-300 dark:border-gray-600 dark:bg-[#1a1a1a]">
+        <div className="glass-surface rounded-[28px] border-2 border-gray-400 p-6 transition-colors duration-300 dark:border-gray-600">
           <div className="grid gap-8 lg:min-h-[70vh] lg:grid-cols-[360px_1fr] lg:items-stretch">
             <div className="flex flex-col gap-6">
-              <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 bg-[#fafafa] text-sm text-zinc-500 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-400">
+              <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 text-sm text-zinc-500 dark:border-gray-600 dark:text-zinc-400">
                 pic
               </div>
 
               <div className="flex flex-col">
-                <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 bg-[#fafafa] text-sm text-zinc-500 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-400">
+                <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-400 text-sm text-zinc-500 dark:border-gray-600 dark:text-zinc-400">
                   QR Code
                 </div>
                 <p className="mt-4 text-sm font-medium text-zinc-800 dark:text-zinc-200">
@@ -100,7 +100,7 @@ export default function EventDetailPage() {
                 {event.Title}
               </h1>
 
-              <div className="mt-8 flex-1 rounded-2xl border-2 border-gray-400 bg-white p-5 text-sm text-zinc-700 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+              <div className="glass-surface mt-8 flex-1 rounded-2xl border-2 border-gray-400 p-5 text-sm text-zinc-700 dark:border-gray-600 dark:text-zinc-200">
                 <p className="font-medium text-zinc-900 dark:text-white">
                   {formatEventDateHeading(event)} · {formatTimeRange(event)}
                 </p>
@@ -119,7 +119,7 @@ export default function EventDetailPage() {
                 </p>
 
                 <div className="mt-4 flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                  <span className="glass-surface rounded-full border border-gray-300 px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:text-zinc-200">
                     {event.Category || "categories"}
                   </span>
                   {rel && !past ? (
@@ -137,26 +137,26 @@ export default function EventDetailPage() {
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  className="h-11 rounded-xl border-2 border-gray-400 bg-white px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#222222]"
+                  className="glass-surface h-11 rounded-xl border-2 border-gray-400 px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
                 >
                   Add to Calendar
                 </button>
                 <button
                   type="button"
-                  className="h-11 rounded-xl border-2 border-gray-400 bg-white px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-[#1a1a1a] dark:text-white dark:hover:bg-[#222222]"
+                  className="glass-surface h-11 rounded-xl border-2 border-gray-400 px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
                 >
                   RSVP
                 </button>
               </div>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                <span className="glass-surface rounded-xl border-2 border-gray-400 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:text-zinc-200">
                   {event.Category || "Ex Tag"}
                 </span>
-                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                <span className="glass-surface rounded-xl border-2 border-gray-400 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:text-zinc-200">
                   Ex Tag
                 </span>
-                <span className="rounded-xl border-2 border-gray-400 bg-white px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:bg-[#111111] dark:text-zinc-200">
+                <span className="glass-surface rounded-xl border-2 border-gray-400 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-600 dark:text-zinc-200">
                   Ex Tag
                 </span>
               </div>

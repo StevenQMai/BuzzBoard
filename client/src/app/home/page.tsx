@@ -20,7 +20,7 @@ export default function Home() {
 
       <section className="px-4 pt-10">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-[36px] border-2 border-gray-400 bg-white/70 px-6 py-12 shadow-md backdrop-blur-sm transition-colors duration-300 dark:border-gray-600 dark:bg-[#1a1a1a]/60">
+          <div className="glass-surface rounded-[36px] border-2 border-gray-400 px-6 py-12 transition-colors duration-300 dark:border-gray-600">
             <h1 className="text-center text-4xl font-semibold tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
               BuzzBoard
             </h1>
@@ -34,7 +34,7 @@ export default function Home() {
             </div>
 
             <div id="events-feed" className="mt-10">
-              <div className="rounded-[36px] border-2 border-gray-400 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111]">
+              <div className="glass-surface rounded-[36px] border-2 border-gray-400 p-6 transition-colors duration-300 dark:border-gray-600">
                 <EventGrid search={effectiveSearch} refreshKey={refreshKey} />
               </div>
             </div>

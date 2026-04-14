@@ -49,7 +49,7 @@ export default function EventCard({
 
   return (
     <article
-      className={`group flex h-full flex-col rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-700/80 dark:bg-zinc-900/80 ${
+      className={`glass-surface group flex h-full flex-col rounded-2xl border border-zinc-200/80 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-700/80 ${
         isSoon ? "ring-1 ring-amber-500/20 dark:ring-amber-400/15" : ""
       }`}
     >
@@ -85,7 +85,7 @@ export default function EventCard({
             type="button"
             onClick={() => onQuickView?.(event)}
             aria-label={`Quick view ${event.Title}`}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-200 dark:hover:bg-zinc-900"
+            className="glass-surface inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-900"
           >
             <EyeIcon className="h-5 w-5" />
           </button>

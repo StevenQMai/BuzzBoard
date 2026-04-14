@@ -74,7 +74,7 @@ export default function Navbar({
 
   return (
     <div className="px-4 pt-4">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-[28px] border-2 border-gray-400 bg-white px-6 py-3 shadow-md transition-colors duration-300 dark:border-gray-600 dark:bg-[#1a1a1a]">
+      <nav className="glass-surface mx-auto flex w-full max-w-7xl items-center justify-between rounded-[28px] border-2 border-gray-400 px-6 py-3 transition-colors duration-300 dark:border-gray-600">
         <Link href="/home" className="flex shrink-0 items-center gap-3">
           <Image
             src="/gt-logo.png"

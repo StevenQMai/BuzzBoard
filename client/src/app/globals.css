@@ -22,3 +22,79 @@
     animation: none;
   }
 }
+
+/* ---------- Liquid glass (app shell) ---------- */
+
+.liquid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Subtle “liquid” blobs behind surfaces (light mode) */
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(800px 500px at 80% 20%, rgba(236, 72, 153, 0.10), transparent 60%),
+    radial-gradient(900px 600px at 50% 90%, rgba(34, 197, 94, 0.10), transparent 60%);
+  filter: saturate(1.05);
+}
+
+.dark .liquid-bg {
+  /* Dark mode: dimmer, more neutral */
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(99, 102, 241, 0.10), transparent 60%),
+    radial-gradient(800px 500px at 80% 20%, rgba(236, 72, 153, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 50% 90%, rgba(34, 197, 94, 0.08), transparent 60%);
+  filter: saturate(1.05);
+}
+
+.glass-surface {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.dark .glass-surface {
+  background: rgba(26, 26, 26, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.glass-surface-strong {
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+
+.dark .glass-surface-strong {
+  background: rgba(26, 26, 26, 0.66);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  .glass-surface-strong {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .dark .glass-surface,
+  .dark .glass-surface-strong {
+    background: rgba(26, 26, 26, 0.92);
+  }
+}
+
+/* Avoid mobile tap highlight “tint” on glass surfaces */
+.glass-surface,
+.glass-surface-strong {
+  -webkit-tap-highlight-color: transparent;
+}
