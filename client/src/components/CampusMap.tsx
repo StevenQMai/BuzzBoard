@@ -8,11 +8,14 @@ import {
   type BuildingGroup,
 } from "@/lib/eventGrouping";
 import { formatEventDateHeading, formatTimeRange } from "@/lib/eventTime";
+import type { FriendPresence } from "@/lib/presenceStore";
 
 type Props = {
   events: Event[];
   variant: "full" | "mini";
   onEventQuickView?: (event: Event) => void;
+  friends?: FriendPresence[];
+  showFriends?: boolean;
 };
 
 const MINI_ZOOM = 14.5;
@@ -57,7 +60,38 @@ function createGoldIcon(L: LeafletModule) {
   });
 }
 
-export default function CampusMap({ events, variant, onEventQuickView }: Props) {
+function createFriendIcon(L: LeafletModule, friend: FriendPresence) {
+  const initial = (friend.displayName || "U").charAt(0).toUpperCase();
+  const inner = friend.photoURL
+    ? `<img src="${friend.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`
+    : `<span style="font-size:14px;font-weight:700;color:#92400e;">${initial}</span>`;
+
+  const isOnline = friend.presence?.isOnline ?? false;
+  const dot = isOnline
+    ? `<span style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:#10b981;border:2px solid white;"></span>`
+    : "";
+
+  return L.divIcon({
+    className: "",
+    html: `<div style="position:relative;width:36px;height:36px;border-radius:50%;border:3px solid #f59e0b;background:#fef3c7;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.2);">${inner}${dot}</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -20],
+  });
+}
+
+function buildFriendPopupHTML(friend: FriendPresence): string {
+  const building = friend.presence?.buildingLabel || "Unknown location";
+  const status = friend.presence?.isOnline ? "Online" : "Offline";
+  return `<div class="bb-popup-root">
+    <div class="bb-popup-header">${friend.displayName}</div>
+    <div class="bb-popup-event">
+      <span class="bb-popup-meta">${status} · ${building}</span>
+    </div>
+  </div>`;
+}
+
+export default function CampusMap({ events, variant, onEventQuickView, friends = [], showFriends = true }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<import("leaflet").Map | null>(null);
   const eventsRef = useRef(events);
@@ -164,6 +198,46 @@ export default function CampusMap({ events, variant, onEventQuickView }: Props) 
       }
     };
   }, [groups]);
+
+  // Friend markers
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || !showFriends) return;
+
+    let L: LeafletModule | null = null;
+    let friendLayer: import("leaflet").LayerGroup | null = null;
+
+    const onlineFriends = friends.filter((f) => f.presence?.isOnline && f.presence.lat && f.presence.lng);
+
+    if (onlineFriends.length === 0) return;
+
+    (async () => {
+      L = await import("leaflet");
+      friendLayer = L.layerGroup().addTo(map);
+
+      for (const friend of onlineFriends) {
+        if (!friend.presence) continue;
+        const icon = createFriendIcon(L!, friend);
+        const marker = L!.marker([friend.presence.lat, friend.presence.lng], { icon }).addTo(friendLayer!);
+
+        const popup = L!.popup({
+          maxWidth: 240,
+          minWidth: 160,
+          className: "bb-glass-popup",
+          closeButton: true,
+        });
+        popup.setContent(buildFriendPopupHTML(friend));
+        marker.bindPopup(popup);
+      }
+    })();
+
+    return () => {
+      if (friendLayer && map) {
+        friendLayer.clearLayers();
+        map.removeLayer(friendLayer);
+      }
+    };
+  }, [friends, showFriends]);
 
   const wrapperClass =
     variant === "full"

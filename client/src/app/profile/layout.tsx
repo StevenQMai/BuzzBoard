@@ -15,6 +15,12 @@ const sidebarSections = [
     ],
   },
   {
+    heading: "Social",
+    links: [
+      { label: "Friends", href: "/profile/friends", icon: "friends" },
+    ],
+  },
+  {
     heading: "Events",
     links: [
       { label: "Events Created", href: "/profile/events-created", icon: "calendar" },
@@ -62,6 +68,15 @@ function SidebarIcon({ name, className }: { name: string; className?: string }) 
         <svg className={cn} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+        </svg>
+      );
+    case "friends":
+      return (
+        <svg className={cn} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
       );
     default:

@@ -7,6 +7,8 @@ import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import FilterDropdown from "./FilterDropdown";
 import DarkModeToggle from "./DarkModeToggle";
+import FriendsSidebar from "./FriendsSidebar";
+import { useFriends } from "@/hooks/useFriends";
 
 function SearchIcon({ className }: { className?: string }) {
   return (
@@ -61,6 +63,7 @@ export default function Navbar({
 }: NavbarProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [friendsOpen, setFriendsOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -70,6 +73,7 @@ export default function Navbar({
     return () => unsubscribe();
   }, []);
 
+  const { pendingRequests } = useFriends(user?.uid ?? null);
   const fullName = user?.displayName || "User";
 
   return (
@@ -162,6 +166,26 @@ export default function Navbar({
                 <circle cx="12" cy="10" r="3" />
               </svg>
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setFriendsOpen(true)}
+              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
+              aria-label="Friends"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              {pendingRequests.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                  {pendingRequests.length}
+                </span>
+              )}
+            </button>
+
             <DarkModeToggle />
 
             <Link
@@ -194,6 +218,10 @@ export default function Navbar({
           </div>
         )}
       </nav>
+
+      {user && (
+        <FriendsSidebar open={friendsOpen} onClose={() => setFriendsOpen(false)} />
+      )}
     </div>
   );
 }

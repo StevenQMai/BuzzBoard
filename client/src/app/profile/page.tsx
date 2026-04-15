@@ -68,7 +68,18 @@ export default function ProfileAccountPage() {
       if (displayName !== user.displayName) {
         await updateProfile(user, { displayName });
       }
-      await setDoc(doc(db, "users", user.uid), { organization, bio, interests }, { merge: true });
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          organization,
+          bio,
+          interests,
+          displayName: displayName || user.email?.split("@")[0] || "",
+          email: user.email || "",
+          photoURL: user.photoURL || null,
+        },
+        { merge: true },
+      );
       setMessage({ type: "success", text: "Profile updated successfully." });
     } catch {
       setMessage({ type: "error", text: "Failed to update profile." });
