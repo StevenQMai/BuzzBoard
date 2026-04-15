@@ -167,8 +167,10 @@ export default function CampusMap({ events, variant, onEventQuickView }: Props) 
 
   const wrapperClass =
     variant === "full"
-      ? "h-full w-full rounded-[28px] overflow-hidden"
-      : "h-[300px] w-full rounded-2xl overflow-hidden glass-surface border-2 border-gray-500 dark:border-gray-500";
+      ? "h-full w-full rounded-[clamp(16px,3vw,28px)] overflow-hidden"
+      : "w-full overflow-hidden rounded-[clamp(12px,2vw,16px)] glass-surface border-2 border-gray-500 dark:border-gray-500";
 
-  return <div ref={containerRef} className={wrapperClass} />;
+  const wrapperStyle = variant === "mini" ? { height: "clamp(200px, 25vw, 350px)" } : undefined;
+
+  return <div ref={containerRef} className={wrapperClass} style={wrapperStyle} />;
 }

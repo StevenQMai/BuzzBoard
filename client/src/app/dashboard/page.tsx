@@ -57,7 +57,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#f8f8f8] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar search={search} setSearch={setSearch} />
 
-      <main className="mx-auto w-full max-w-7xl px-8 py-10">
+      <main className="mx-auto w-full max-w-[92%] px-8 py-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (

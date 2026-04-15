@@ -73,8 +73,8 @@ export default function Navbar({
   const fullName = user?.displayName || "User";
 
   return (
-    <div className="sticky top-0 z-40 px-4 pt-4 pb-2">
-      <nav className="glass-surface mx-auto flex w-full max-w-7xl items-center justify-between rounded-[28px] border-2 border-gray-400 px-6 py-3 transition-colors duration-300 dark:border-gray-600">
+    <div className="sticky top-0 z-40 px-[clamp(1rem,3vw,2rem)] pt-[clamp(0.5rem,1.5vw,1rem)] pb-2">
+      <nav className="glass-surface mx-auto flex w-full max-w-[92%] items-center justify-between rounded-[clamp(16px,3vw,28px)] border-2 border-gray-400 px-[clamp(1rem,2.5vw,1.5rem)] py-[clamp(0.5rem,1vw,0.75rem)] transition-colors duration-300 dark:border-gray-600">
         <Link href="/home" className="flex shrink-0 items-center gap-2.5">
           <Image
             src="/buzz.png"

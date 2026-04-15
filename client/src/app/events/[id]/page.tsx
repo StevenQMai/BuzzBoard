@@ -66,7 +66,7 @@ export default function EventDetailPage() {
   return (
     <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
       <Navbar />
-      <article className="mx-auto max-w-7xl px-4 pb-16 pt-8 lg:px-8">
+      <article className="mx-auto w-full max-w-[92%] px-4 pb-16 pt-8 lg:px-8">
         <button
           type="button"
           onClick={() => router.back()}

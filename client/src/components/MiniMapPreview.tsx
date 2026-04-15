@@ -35,8 +35,8 @@ export default function MiniMapPreview() {
   }, []);
 
   return (
-    <div className="group relative px-4 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="group relative">
+      <div className="w-full">
         <Link
           href="/map"
           className="absolute inset-0 z-10"

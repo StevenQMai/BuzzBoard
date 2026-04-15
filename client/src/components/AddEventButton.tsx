@@ -65,16 +65,18 @@ export default function AddEventButton({ onEventAddedAction, rightSlot }: Props)
 
   return (
     <>
-      <div className="mx-auto mt-6 mb-4 flex w-full max-w-7xl justify-end gap-3 px-4">
-        {rightSlot}
-        {user && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="rounded-xl bg-black px-5 py-3 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-          >
-            Add an Event
-          </button>
-        )}
+      <div className="mt-[clamp(1rem,2vw,1.5rem)] mb-[clamp(0.5rem,1.5vw,1rem)] px-[clamp(1rem,3vw,2rem)]">
+        <div className="mx-auto flex w-full max-w-[92%] justify-end gap-3">
+          {rightSlot}
+          {user && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="rounded-xl bg-black px-5 py-3 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            >
+              Add an Event
+            </button>
+          )}
+        </div>
       </div>
 
       {showModal && user && (

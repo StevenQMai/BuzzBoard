@@ -13,7 +13,7 @@ export default function StartingSoonStrip({ events, onQuickView }: Props) {
 
   return (
     <section className="px-4 pb-8 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-full max-w-[92%]">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
           Starting soon
         </h2>

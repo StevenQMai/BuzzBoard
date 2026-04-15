@@ -158,14 +158,17 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
 
   return (
     <>
-      <section className="px-4 pb-16 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className="pb-[clamp(2rem,4vw,4rem)]">
+        <div className="w-full">
           {soon.length > 0 && (
             <>
               <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Starting soon
               </h2>
-              <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div
+                className="mb-[clamp(1.5rem,3vw,2.5rem)] grid gap-[clamp(1rem,2vw,1.5rem)]"
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
+              >
                 {soon.map((event) => (
                   <EventCard
                     key={event.id}
@@ -184,7 +187,10 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
               <h2 className="mb-6 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 {soon.length > 0 ? "More upcoming" : "Upcoming"}
               </h2>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div
+                className="grid gap-[clamp(1rem,2vw,1.5rem)]"
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
+              >
                 {rest.map((event) => (
                   <EventCard
                     key={event.id}
