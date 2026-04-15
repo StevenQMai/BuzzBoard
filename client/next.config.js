@@ -13,7 +13,6 @@ module.exports = {
     ],
   },
   turbopack: {
-    root: __dirname,
     resolveAlias: {
       tailwindcss: require.resolve('tailwindcss'),
     },
