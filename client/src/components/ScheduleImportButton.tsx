@@ -118,7 +118,7 @@ export default function ScheduleImportButton({ onScheduleChanged }: Props) {
   };
 
   return (
-    <div className="relative z-50 isolate">
+    <div className="relative z-20">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
