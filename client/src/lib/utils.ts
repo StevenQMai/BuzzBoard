@@ -13,6 +13,7 @@ export interface Event {
   Approved?: boolean;
   Created_at?: string;
   Host_display_name?: string;
+  Image_url?: string;
 }
 
 export async function fetchEvents(type?: string): Promise<Event[]> {
