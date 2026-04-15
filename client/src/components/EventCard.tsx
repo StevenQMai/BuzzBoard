@@ -107,7 +107,7 @@ export default function EventCard({
             type="button"
             onClick={() => onQuickView?.(event)}
             aria-label={`Quick view ${event.Title}`}
-            className="glass-surface inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-zinc-300 text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-900"
+            className="glass-surface inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-zinc-300 text-zinc-700 transition duration-200 hover:scale-110 hover:text-amber-600 hover:ring-2 hover:ring-amber-400/50 dark:border-zinc-600 dark:text-zinc-200 dark:hover:text-amber-400 dark:hover:ring-amber-400/40"
           >
             <EyeIcon className="h-5 w-5" />
           </button>

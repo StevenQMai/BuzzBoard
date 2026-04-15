@@ -159,7 +159,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
 
   return (
     <>
-      <StartingSoonStrip events={soon} />
+      <StartingSoonStrip events={soon} onQuickView={setQuickViewEvent} />
       <section className="px-4 pb-16 lg:px-8">
         <div className="mx-auto max-w-7xl">
           {rest.length > 0 && (

@@ -5,9 +5,10 @@ import EventCard from "./EventCard";
 
 type Props = {
   events: Event[];
+  onQuickView?: (event: Event) => void;
 };
 
-export default function StartingSoonStrip({ events }: Props) {
+export default function StartingSoonStrip({ events, onQuickView }: Props) {
   if (events.length === 0) return null;
 
   return (
@@ -22,7 +23,7 @@ export default function StartingSoonStrip({ events }: Props) {
               key={event.id}
               className="w-[min(100%,320px)] shrink-0 snap-start"
             >
-              <EventCard event={event} variant="soon" />
+              <EventCard event={event} variant="soon" onQuickView={onQuickView} />
             </div>
           ))}
         </div>
