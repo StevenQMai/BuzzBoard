@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { Event } from "@/lib/utils";
 import {
   formatEventDateHeading,
@@ -122,9 +123,9 @@ export default function EventQuickViewModal({
   const rel = relativeStartsIn(event);
   const past = isPastEvent(event);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-8"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -217,7 +218,8 @@ export default function EventQuickViewModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

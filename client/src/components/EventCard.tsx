@@ -11,6 +11,7 @@ type Props = {
   event: Event;
   variant?: "default" | "soon";
   onQuickView?: (event: Event) => void;
+  scheduleTags?: string[];
 };
 
 function EyeIcon({ className }: { className?: string }) {
@@ -42,6 +43,7 @@ export default function EventCard({
   event,
   variant = "default",
   onQuickView,
+  scheduleTags,
 }: Props) {
   const showToday = shouldShowTodayTimeBadge(event);
   const rel = showToday ? null : relativeStartsIn(event);
@@ -70,6 +72,26 @@ export default function EventCard({
             )
           )}
         </div>
+
+        {scheduleTags && scheduleTags.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {scheduleTags.map((t) => {
+              const isFit = t === "Fits your schedule";
+              return (
+                <span
+                  key={t}
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    isFit
+                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
+                      : "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200"
+                  }`}
+                >
+                  {t}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         <div className="mb-2 flex items-start justify-between gap-3">
           <h3 className="min-w-0 flex-1">

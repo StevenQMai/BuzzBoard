@@ -6,6 +6,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 
 type Props = {
   onEventAddedAction?: () => void;
+  rightSlot?: React.ReactNode;
 };
 
 const EMPTY_FORM = {
@@ -19,7 +20,7 @@ const EMPTY_FORM = {
   Description: "",
 };
 
-export default function AddEventButton({ onEventAddedAction }: Props) {
+export default function AddEventButton({ onEventAddedAction, rightSlot }: Props) {
   const [user, setUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -62,20 +63,21 @@ export default function AddEventButton({ onEventAddedAction }: Props) {
     setAdding(false);
   };
 
-  if (!user) return null;
-
   return (
     <>
-      <div className="mx-auto mt-6 mb-4 flex w-full max-w-7xl justify-end px-4">
-        <button
-          onClick={() => setShowModal(true)}
-          className="rounded-xl bg-black px-5 py-3 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-        >
-          Add an Event
-        </button>
+      <div className="mx-auto mt-6 mb-4 flex w-full max-w-7xl justify-end gap-3 px-4">
+        {rightSlot}
+        {user && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="rounded-xl bg-black px-5 py-3 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+          >
+            Add an Event
+          </button>
+        )}
       </div>
 
-      {showModal && (
+      {showModal && user && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <form
             onSubmit={handleSubmit}

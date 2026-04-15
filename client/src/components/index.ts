@@ -6,3 +6,4 @@ export { default as FilterDropdown } from "./FilterDropdown";
 export { default as CategoriesStrip } from "./CategoriesStrip";
 export { default as LandingSearchBar } from "./LandingSearchBar";
 export { default as EventQuickViewModal } from "./EventQuickViewModal";
+export { default as ScheduleImportButton } from "./ScheduleImportButton";

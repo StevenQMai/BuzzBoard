@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Navbar, EventGrid } from "@/components";
+import { Navbar, EventGrid, ScheduleImportButton } from "@/components";
 import AddEventButton from "@/components/AddEventButton";
 import LandingSearchBar from "@/components/LandingSearchBar";
 import CategoriesStrip from "@/components/CategoriesStrip";
@@ -16,7 +16,16 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#fafafa] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar showSearch={false} />
-      <AddEventButton onEventAddedAction={() => setRefreshKey((k) => k + 1)} />
+      <AddEventButton
+        onEventAddedAction={() => setRefreshKey((k) => k + 1)}
+        rightSlot={
+          <ScheduleImportButton
+            onScheduleChanged={() => {
+              window.dispatchEvent(new Event("buzzboard:scheduleChanged"));
+            }}
+          />
+        }
+      />
 
       <section className="px-4 pt-10">
         <div className="mx-auto max-w-7xl">
