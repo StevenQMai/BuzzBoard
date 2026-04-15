@@ -76,6 +76,7 @@ export default function EventsCreatedPage() {
 
       {quickViewEvent && (
         <EventQuickViewModal
+          open={true}
           event={quickViewEvent}
           onClose={() => setQuickViewEvent(null)}
         />
