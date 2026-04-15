@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${righteous.variable} font-sans bg-[#fafafa] text-zinc-900 antialiased transition-colors duration-300 dark:bg-[#111111] dark:text-zinc-50`}
+        className={`${inter.variable} ${righteous.variable} font-sans bg-[#fefcf3] text-zinc-900 antialiased transition-colors duration-300 dark:bg-[#111111] dark:text-zinc-50`}
       >
         <div className="liquid-bg" aria-hidden />
         {children}

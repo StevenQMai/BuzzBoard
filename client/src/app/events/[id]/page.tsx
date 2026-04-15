@@ -28,7 +28,7 @@ export default function EventDetailPage() {
 
   if (error === "not_found") {
     return (
-      <main className="min-h-screen bg-[#fafafa] dark:bg-[#111111]">
+      <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
         <Navbar />
         <div className="mx-auto max-w-2xl px-6 py-20 text-center">
           <p className="mb-6 text-lg text-zinc-600 dark:text-zinc-300">
@@ -47,7 +47,7 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <main className="min-h-screen bg-[#fafafa] dark:bg-[#111111]">
+      <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
         <Navbar />
         <div className="mx-auto max-w-2xl px-6 py-20">
           <div className="h-8 w-2/3 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
@@ -64,7 +64,7 @@ export default function EventDetailPage() {
   const past = isPastEvent(event);
 
   return (
-    <main className="min-h-screen bg-[#fafafa] dark:bg-[#111111]">
+    <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
       <Navbar />
       <article className="mx-auto max-w-7xl px-4 pb-16 pt-8 lg:px-8">
         <button

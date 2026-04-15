@@ -17,7 +17,6 @@ import {
 } from "@/lib/scheduleStore";
 import { scoreEventsForSchedule } from "@/lib/scheduleScoring";
 import EventCard from "./EventCard";
-import StartingSoonStrip from "./StartingSoonStrip";
 import EventQuickViewModal from "./EventQuickViewModal";
 
 type Props = {
@@ -159,9 +158,27 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
 
   return (
     <>
-      <StartingSoonStrip events={soon} onQuickView={setQuickViewEvent} />
       <section className="px-4 pb-16 lg:px-8">
         <div className="mx-auto max-w-7xl">
+          {soon.length > 0 && (
+            <>
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                Starting soon
+              </h2>
+              <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {soon.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    variant="soon"
+                    scheduleTags={scheduleScores?.[event.id]?.tags}
+                    onQuickView={setQuickViewEvent}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
           {rest.length > 0 && (
             <>
               <h2 className="mb-6 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">

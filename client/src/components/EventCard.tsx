@@ -51,9 +51,7 @@ export default function EventCard({
 
   return (
     <article
-      className={`glass-surface group flex h-full flex-col rounded-2xl border-2 border-zinc-300 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-600 ${
-        isSoon ? "ring-1 ring-amber-500/20 dark:ring-amber-400/15" : ""
-      }`}
+      className="glass-surface group flex h-full flex-col rounded-2xl border-2 border-zinc-300 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-600"
     >
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-3 flex items-start justify-between gap-2">

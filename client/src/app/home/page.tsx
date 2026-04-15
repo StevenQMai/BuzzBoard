@@ -5,6 +5,7 @@ import { Navbar, EventGrid, ScheduleImportButton } from "@/components";
 import AddEventButton from "@/components/AddEventButton";
 import LandingSearchBar from "@/components/LandingSearchBar";
 import CategoriesStrip from "@/components/CategoriesStrip";
+import MiniMapPreview from "@/components/MiniMapPreview";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -14,7 +15,7 @@ export default function Home() {
   const effectiveSearch = category === "All" ? search : `${search} ${category}`.trim();
 
   return (
-    <main className="min-h-screen bg-[#fafafa] transition-colors duration-300 dark:bg-[#111111]">
+    <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar showSearch={false} />
       <AddEventButton
         onEventAddedAction={() => setRefreshKey((k) => k + 1)}
@@ -46,6 +47,9 @@ export default function Home() {
 
             <div id="events-feed" className="mt-10">
               <div className="glass-surface rounded-[36px] border-2 border-gray-500 p-6 transition-colors duration-300 dark:border-gray-500">
+                <div className="mb-10">
+                  <MiniMapPreview />
+                </div>
                 <EventGrid search={effectiveSearch} refreshKey={refreshKey} />
               </div>
             </div>

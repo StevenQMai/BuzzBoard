@@ -7,3 +7,5 @@ export { default as CategoriesStrip } from "./CategoriesStrip";
 export { default as LandingSearchBar } from "./LandingSearchBar";
 export { default as EventQuickViewModal } from "./EventQuickViewModal";
 export { default as ScheduleImportButton } from "./ScheduleImportButton";
+export { default as CampusMap } from "./CampusMap";
+export { default as MiniMapPreview } from "./MiniMapPreview";
