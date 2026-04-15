@@ -165,7 +165,7 @@ export default function Navbar({
             <DarkModeToggle />
 
             <Link
-              href="/dashboard"
+              href="/profile"
               className="inline-flex h-10 max-w-[200px] shrink-0 items-center gap-2 rounded-xl border-2 border-gray-400 px-3 text-sm leading-none transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
             >
               {user.photoURL ? (
