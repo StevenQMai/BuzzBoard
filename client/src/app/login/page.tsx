@@ -44,12 +44,13 @@ export default function LoginPage() {
         <div className="flex flex-col items-center text-center">
           <Link href="/home" className="mb-3 flex items-center justify-center gap-2 w-full">
             <Image
-              src="/gt-logo.png"
-              alt="BuzzBoard Logo"
+              src="/buzz.png"
+              alt="Georgia Tech Buzz mascot"
               width={40}
               height={40}
+              className="object-contain drop-shadow-md"
             />
-            <span className="text-2xl font-semibold text-black dark:text-white">
+            <span className="font-logo logo-stroke bg-linear-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-2xl text-transparent drop-shadow-sm dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400">
               BuzzBoard
             </span>
           </Link>

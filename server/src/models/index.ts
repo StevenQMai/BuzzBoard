@@ -10,4 +10,5 @@ export interface Event {
   Description?: string;
   Approved?: boolean;
   Created_at?: string;
+  Host_display_name?: string;
 }

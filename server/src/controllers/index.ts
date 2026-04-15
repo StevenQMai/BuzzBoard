@@ -33,3 +33,18 @@ export const createEvent = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getEventById = async (req: Request, res: Response) => {
+  try {
+    const db = getFirebaseFirestore();
+    const doc = await db.collection('events').doc(req.params.id).get();
+    if (!doc.exists) {
+      res.status(404).json({ error: 'Event not found' });
+      return;
+    }
+    const data = doc.data() as Omit<Event, 'id'>;
+    res.json({ id: doc.id, ...data });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

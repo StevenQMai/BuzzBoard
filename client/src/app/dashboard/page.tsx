@@ -13,13 +13,29 @@ export default function DashboardPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push("/login");
-      }
-    });
+    let unsub: (() => void) | undefined;
+    let cancelled = false;
 
-    return () => unsubscribe();
+    const subscribe = () => {
+      unsub = onAuthStateChanged(auth, (user) => {
+        if (!user) router.push("/login");
+      });
+    };
+
+    // Wait for persisted session; subscribing too early can fire null and bounce to /login.
+    auth
+      .authStateReady()
+      .then(() => {
+        if (!cancelled) subscribe();
+      })
+      .catch(() => {
+        if (!cancelled) subscribe();
+      });
+
+    return () => {
+      cancelled = true;
+      unsub?.();
+    };
   }, [router]);
 
   useEffect(() => {
@@ -41,7 +57,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#f8f8f8] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar search={search} setSearch={setSearch} />
 
-      <main className="mx-auto w-full max-w-7xl px-8 py-10">
+      <main className="mx-auto w-full max-w-[92%] px-8 py-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (

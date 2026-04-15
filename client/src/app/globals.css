@@ -1,2 +1,308 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Tailwind v4 is CSS-first; custom theme in tailwind.config.js is not applied unless @config is set.
+   Define the hero "explore events" idle bounce here so it always runs. */
+@keyframes hero-idle-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.hero-feed-cue {
+  animation: hero-idle-bounce 1.45s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-feed-cue {
+    animation: none;
+  }
+}
+
+/* ---------- Logo font ---------- */
+.font-logo {
+  font-family: var(--font-logo), cursive;
+}
+
+.logo-stroke {
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.7);
+  paint-order: stroke fill;
+}
+
+.dark .logo-stroke {
+  -webkit-text-stroke: none;
+}
+
+/* ---------- Liquid glass (app shell) ---------- */
+
+.liquid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(251, 191, 36, 0.10), transparent 60%),
+    radial-gradient(800px 500px at 80% 20%, rgba(245, 158, 11, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 50% 90%, rgba(217, 119, 6, 0.06), transparent 60%);
+  filter: saturate(1.05);
+}
+
+.dark .liquid-bg {
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(99, 102, 241, 0.10), transparent 60%),
+    radial-gradient(800px 500px at 80% 20%, rgba(236, 72, 153, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 50% 90%, rgba(34, 197, 94, 0.08), transparent 60%);
+  filter: saturate(1.05);
+}
+
+.glass-surface {
+  background: rgba(255, 253, 245, 0.65);
+  border: 1.5px solid rgba(100, 70, 30, 0.35);
+  box-shadow:
+    0 10px 24px rgba(100, 70, 30, 0.06),
+    inset 0 1px 0 rgba(255, 255, 240, 0.6);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.dark .glass-surface {
+  background: rgba(26, 26, 26, 0.58);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.glass-surface-strong {
+  background: rgba(255, 253, 245, 0.75);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+
+.dark .glass-surface-strong {
+  background: rgba(26, 26, 26, 0.66);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  .glass-surface-strong {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(255, 253, 245, 0.95);
+  }
+
+  .dark .glass-surface,
+  .dark .glass-surface-strong {
+    background: rgba(26, 26, 26, 0.92);
+  }
+}
+
+/* Avoid mobile tap highlight "tint" on glass surfaces */
+.glass-surface,
+.glass-surface-strong {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Leaflet / Campus Map ---------- */
+
+.bb-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.bb-marker-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fbbf24, #d97706);
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(217, 119, 6, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.bb-marker-dot:hover {
+  transform: scale(1.2);
+}
+
+.dark .bb-marker-dot {
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(251, 191, 36, 0.4);
+}
+
+.bb-glass-popup .leaflet-popup-content-wrapper {
+  background: rgba(255, 253, 245, 0.88);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+  border: 1.5px solid rgba(100, 70, 30, 0.30);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(100, 70, 30, 0.08);
+  padding: 0;
+}
+
+.dark .bb-glass-popup .leaflet-popup-content-wrapper {
+  background: rgba(26, 26, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.bb-glass-popup .leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+}
+
+.bb-glass-popup .leaflet-popup-tip {
+  background: rgba(255, 253, 245, 0.88);
+  border: 1px solid rgba(100, 70, 30, 0.25);
+  box-shadow: none;
+}
+
+.dark .bb-glass-popup .leaflet-popup-tip {
+  background: rgba(26, 26, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.bb-glass-popup .leaflet-popup-close-button {
+  color: #71717a;
+  font-size: 20px;
+  top: 8px !important;
+  right: 10px !important;
+}
+
+.dark .bb-glass-popup .leaflet-popup-close-button {
+  color: #a1a1aa;
+}
+
+.bb-popup-root {
+  padding: 14px 16px;
+  min-width: 220px;
+}
+
+.bb-popup-header {
+  font-weight: 700;
+  font-size: 15px;
+  color: #18181b;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(100, 70, 30, 0.12);
+}
+
+.dark .bb-popup-header {
+  color: #fafafa;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.bb-popup-event {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(100, 70, 30, 0.08);
+}
+
+.dark .bb-popup-event {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.bb-popup-event:last-of-type {
+  border-bottom: none;
+}
+
+.bb-popup-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #18181b;
+  text-decoration: none;
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bb-popup-title:hover {
+  text-decoration: underline;
+  color: #d97706;
+}
+
+.dark .bb-popup-title {
+  color: #fafafa;
+}
+
+.dark .bb-popup-title:hover {
+  color: #fbbf24;
+}
+
+.bb-popup-eye {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(100, 70, 30, 0.25);
+  background: rgba(255, 253, 245, 0.5);
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.bb-popup-eye:hover {
+  color: #d97706;
+  border-color: #d97706;
+  transform: scale(1.1);
+}
+
+.dark .bb-popup-eye {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(40, 40, 40, 0.5);
+  color: #a1a1aa;
+}
+
+.dark .bb-popup-eye:hover {
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.bb-popup-meta {
+  width: 100%;
+  font-size: 11px;
+  color: #71717a;
+}
+
+.dark .bb-popup-meta {
+  color: #a1a1aa;
+}
+
+.bb-popup-cat {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  background: rgba(100, 70, 30, 0.08);
+  color: #52525b;
+}
+
+.dark .bb-popup-cat {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d4d4d8;
+}
+
+.bb-popup-overflow {
+  font-size: 11px;
+  color: #d97706;
+  font-weight: 600;
+  padding-top: 6px;
+  text-align: center;
+}
