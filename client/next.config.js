@@ -13,6 +13,9 @@ module.exports = {
     ],
   },
   turbopack: {
+    // Ensure Turbopack resolves packages relative to the client workspace,
+    // even when the repo contains multiple lockfiles.
+    root: __dirname,
     resolveAlias: {
       tailwindcss: require.resolve('tailwindcss'),
     },

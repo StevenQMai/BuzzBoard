@@ -74,7 +74,6 @@ export default function Navbar({
   }, []);
 
   const { pendingRequests } = useFriends(user?.uid ?? null);
-  const fullName = user?.displayName || "User";
 
   return (
     <div className="sticky top-0 z-40 px-[clamp(1rem,3vw,2rem)] pt-[clamp(0.5rem,1.5vw,1rem)] pb-2">
@@ -204,7 +203,7 @@ export default function Navbar({
                 </span>
               )}
               <span className="min-w-0 truncate font-medium text-black dark:text-white">
-                {fullName}
+                {user.displayName || "User"}
               </span>
             </Link>
 
