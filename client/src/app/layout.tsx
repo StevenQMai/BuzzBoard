@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Righteous } from "next/font/google";
+import { Inter, Pacifico } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,7 +8,7 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const righteous = Righteous({
+const pacifico = Pacifico({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${righteous.variable} font-sans bg-[#fefcf3] text-zinc-900 antialiased transition-colors duration-300 dark:bg-[#111111] dark:text-zinc-50`}
+        className={`${inter.variable} ${pacifico.variable} font-sans bg-[#fefcf3] text-zinc-900 antialiased transition-colors duration-300 dark:bg-[#111111] dark:text-zinc-50`}
       >
         <div className="liquid-bg" aria-hidden />
         {children}
