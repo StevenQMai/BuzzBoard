@@ -207,13 +207,6 @@ export default function Navbar({
               </span>
             </Link>
 
-            <Link
-              href="/profile"
-              className="rounded-xl border-2 border-gray-400 px-4 py-2 text-sm transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
-            >
-              Profile
-            </Link>
-
             <button
               type="button"
               onClick={() => signOut(auth)}
