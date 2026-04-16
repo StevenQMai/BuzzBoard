@@ -86,7 +86,7 @@ export default function Navbar({
             height={40}
             className="object-contain drop-shadow-md"
           />
-          <span className="font-logo logo-stroke bg-linear-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-3xl text-transparent drop-shadow-sm dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400">
+          <span className="font-logo text-3xl text-amber-600 dark:text-amber-400">
             BuzzBoard
           </span>
         </Link>
