@@ -10,6 +10,7 @@ import {
   isPastEvent,
   relativeStartsIn,
 } from "@/lib/eventTime";
+import { useEventRsvp } from "@/hooks/useRsvp";
 
 type Props = {
   open: boolean;
@@ -59,6 +60,9 @@ export default function EventQuickViewModal({
   const titleId = useMemo(
     () => labelledById || `event-quick-view-title-${event?.id || "unknown"}`,
     [labelledById, event?.id]
+  );
+  const { isRsvpd, rsvpCount, toggle, user } = useEventRsvp(
+    open ? event?.id : undefined,
   );
 
   useEffect(() => {
@@ -154,12 +158,26 @@ export default function EventQuickViewModal({
               pic
             </div>
             <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
-              >
-                RSVP
-              </button>
+              {user ? (
+                <button
+                  type="button"
+                  onClick={toggle}
+                  className={`h-11 flex-1 cursor-pointer rounded-xl border-2 text-sm font-medium transition duration-200 active:scale-[0.98] ${
+                    isRsvpd
+                      ? "border-amber-500 bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow-md hover:ring-2 hover:ring-amber-300/70 dark:border-amber-400 dark:bg-amber-500 dark:hover:bg-amber-600 dark:hover:ring-amber-200/50"
+                      : "border-gray-300 bg-white/85 text-zinc-900 shadow-sm hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                  }`}
+                >
+                  {isRsvpd ? `Going ✓ (${rsvpCount})` : rsvpCount > 0 ? `RSVP (${rsvpCount})` : "RSVP"}
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-gray-300 bg-white/85 text-sm font-medium text-zinc-900 shadow-sm transition duration-200 hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 active:scale-[0.98] dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                >
+                  Sign in to RSVP
+                </Link>
+              )}
               <button
                 type="button"
                 className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
