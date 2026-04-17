@@ -1,11 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Navbar, EventGrid, ScheduleImportButton } from "@/components";
 import AddEventButton from "@/components/AddEventButton";
 import LandingSearchBar from "@/components/LandingSearchBar";
 import CategoriesStrip from "@/components/CategoriesStrip";
 import MiniMapPreview from "@/components/MiniMapPreview";
+
+function HomeQuerySync({ onQuery }: { onQuery: (q: string) => void }) {
+  const params = useSearchParams();
+  const q = (params.get("q") ?? "").trim();
+
+  useEffect(() => {
+    if (!q) return;
+    onQuery(q);
+
+    const el = document.getElementById("events-feed");
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [onQuery, q]);
+
+  return null;
+}
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -16,6 +32,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
+      <Suspense fallback={null}>
+        <HomeQuerySync onQuery={setSearch} />
+      </Suspense>
       <Navbar showSearch={false} />
       <AddEventButton
         onEventAddedAction={() => setRefreshKey((k) => k + 1)}
@@ -36,7 +55,7 @@ export default function Home() {
             </h1>
 
             <div className="mt-[clamp(1.5rem,4vw,2.5rem)] flex justify-center">
-              <LandingSearchBar value={search} onChange={setSearch} />
+              <LandingSearchBar value={search} onChange={setSearch} showFilters />
             </div>
 
             <div className="mt-[clamp(1.5rem,4vw,2.5rem)]">

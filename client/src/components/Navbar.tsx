@@ -3,52 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import FilterDropdown from "./FilterDropdown";
 import DarkModeToggle from "./DarkModeToggle";
 import FriendsSidebar from "./FriendsSidebar";
 import { useFriends } from "@/hooks/useFriends";
-
-function SearchIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-      />
-    </svg>
-  );
-}
-
-function ChevronDownIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19 9l-7 7-7-7"
-      />
-    </svg>
-  );
-}
+import NavSearch from "./NavSearch";
 
 type NavbarProps = {
   search?: string;
@@ -61,9 +22,10 @@ export default function Navbar({
   setSearch,
   showSearch = true,
 }: NavbarProps) {
-  const [showFilters, setShowFilters] = useState(false);
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [friendsOpen, setFriendsOpen] = useState(false);
+  const [localSearch, setLocalSearch] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -74,6 +36,20 @@ export default function Navbar({
   }, []);
 
   const { pendingRequests } = useFriends(user?.uid ?? null);
+
+  const effectiveSearch = setSearch ? search : localSearch;
+  const onSearchChange = (next: string) => {
+    if (setSearch) setSearch(next);
+    else setLocalSearch(next);
+  };
+
+  const onSearchSubmit = (query: string) => {
+    if (!setSearch) {
+      const q = query.trim();
+      if (!q) return;
+      router.push(`/home?q=${encodeURIComponent(q)}#events-feed`);
+    }
+  };
 
   return (
     <div className="sticky top-0 z-40 px-[clamp(1rem,3vw,2rem)] pt-[clamp(0.5rem,1.5vw,1rem)] pb-2">
@@ -93,37 +69,11 @@ export default function Navbar({
 
         {showSearch && (
           <div className="flex min-w-0 flex-1 items-center justify-center px-6">
-            <div className="flex w-full min-w-0 max-w-xl items-center gap-3">
-              <input
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={(e) => setSearch?.(e.target.value)}
-                className="h-11 flex-1 rounded-xl border-2 border-gray-400 bg-white px-4 text-sm text-black outline-none transition-colors duration-300 dark:border-gray-600 dark:bg-[#111111] dark:text-white dark:placeholder:text-gray-400"
-              />
-
-              <button
-                type="button"
-                aria-label="Search"
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
-              >
-                <SearchIcon className="h-6 w-6" />
-              </button>
-
-              <div className="relative">
-                <button
-                  type="button"
-                  aria-expanded={showFilters}
-                  aria-label="Open filters"
-                  onClick={() => setShowFilters((prev) => !prev)}
-                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-gray-400 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
-                >
-                  <ChevronDownIcon className="h-6 w-6" />
-                </button>
-
-                {showFilters && <FilterDropdown />}
-              </div>
-            </div>
+            <NavSearch
+              value={effectiveSearch}
+              onChange={onSearchChange}
+              onSubmit={onSearchSubmit}
+            />
           </div>
         )}
 
