@@ -11,6 +11,7 @@ import {
   isPastEvent,
   relativeStartsIn,
 } from "@/lib/eventTime";
+import { useEventRsvp } from "@/hooks/useRsvp";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function EventDetailPage() {
   const id = typeof params.id === "string" ? params.id : "";
   const [event, setEvent] = useState<Event | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { isRsvpd, rsvpCount, attendees, toggle, user } = useEventRsvp(id);
 
   useEffect(() => {
     if (!id) return;
@@ -82,16 +84,38 @@ export default function EventDetailPage() {
                 pic
               </div>
 
-              <div className="flex flex-col">
-                <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
-                  QR Code
-                </div>
-                <p className="mt-4 text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                  RSVP Link:
+              <div className="glass-surface rounded-2xl border-2 border-gray-500 p-4 dark:border-gray-500">
+                <p className="mb-3 text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                  {rsvpCount} {rsvpCount === 1 ? "person" : "people"} going
                 </p>
-                <p className="mt-1 break-all text-sm text-zinc-500 dark:text-zinc-400">
-                  (placeholder)
-                </p>
+                {attendees.length > 0 && (
+                  <div className="flex -space-x-2">
+                    {attendees.slice(0, 8).map((a) =>
+                      a.photoURL ? (
+                        <img
+                          key={a.userId}
+                          src={a.photoURL}
+                          alt={a.displayName}
+                          title={a.displayName}
+                          className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-zinc-800"
+                        />
+                      ) : (
+                        <span
+                          key={a.userId}
+                          title={a.displayName}
+                          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-amber-100 text-xs font-bold text-amber-700 dark:border-zinc-800 dark:bg-amber-900 dark:text-amber-300"
+                        >
+                          {a.displayName.charAt(0).toUpperCase()}
+                        </span>
+                      ),
+                    )}
+                    {attendees.length > 8 && (
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-xs font-semibold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
+                        +{attendees.length - 8}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -141,12 +165,26 @@ export default function EventDetailPage() {
                 >
                   Add to Calendar
                 </button>
-                <button
-                  type="button"
-                  className="glass-surface h-11 rounded-xl border-2 border-gray-500 px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
-                >
-                  RSVP
-                </button>
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={toggle}
+                    className={`h-11 cursor-pointer rounded-xl border-2 px-5 text-sm font-medium transition duration-200 active:scale-[0.98] ${
+                      isRsvpd
+                        ? "border-amber-500 bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow-md hover:ring-2 hover:ring-amber-300/70 dark:border-amber-400 dark:bg-amber-500 dark:hover:bg-amber-600 dark:hover:ring-amber-200/50"
+                        : "border-gray-300 bg-white/85 text-zinc-900 shadow-sm hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                    }`}
+                  >
+                    {isRsvpd ? "Going ✓" : "RSVP"}
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="flex h-11 cursor-pointer items-center justify-center rounded-xl border-2 border-gray-300 bg-white/85 px-5 text-sm font-medium text-zinc-900 shadow-sm transition duration-200 hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 active:scale-[0.98] dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                  >
+                    Sign in to RSVP
+                  </Link>
+                )}
               </div>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

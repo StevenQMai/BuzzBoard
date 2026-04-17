@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchEvents, type Event } from "@/lib/utils";
 import {
   isPastEvent,
@@ -16,6 +16,7 @@ import {
   saveScheduleToLocalStorage,
 } from "@/lib/scheduleStore";
 import { scoreEventsForSchedule } from "@/lib/scheduleScoring";
+import { subscribeEventRsvps } from "@/lib/rsvpStore";
 import EventCard from "./EventCard";
 import EventQuickViewModal from "./EventQuickViewModal";
 
@@ -43,6 +44,8 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
   const [user, setUser] = useState<User | null>(null);
   const [schedule, setSchedule] = useState<ClassBlock[] | null>(null);
   const [scheduleBump, setScheduleBump] = useState(0);
+  const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+  const rsvpUnsubsRef = useRef<Record<string, () => void>>({});
 
   // Allow parent components (e.g., ScheduleImportButton) to trigger a resync by
   // bumping this state via a custom event (no prop threading required).
@@ -89,6 +92,37 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
       alive = false;
     };
   }, [user, scheduleBump]);
+
+  const visibleIds = useMemo(() => events.filter((e) => !isPastEvent(e)).map((e) => e.id), [events]);
+
+  useEffect(() => {
+    const prev = rsvpUnsubsRef.current;
+    const needed = new Set(visibleIds);
+    const current: Record<string, () => void> = {};
+
+    for (const id of Object.keys(prev)) {
+      if (!needed.has(id)) {
+        prev[id]();
+      }
+    }
+
+    for (const id of visibleIds) {
+      if (prev[id]) {
+        current[id] = prev[id];
+      } else {
+        current[id] = subscribeEventRsvps(id, (rsvps) => {
+          setRsvpCounts((c) => ({ ...c, [id]: rsvps.length }));
+        });
+      }
+    }
+
+    rsvpUnsubsRef.current = current;
+
+    return () => {
+      for (const unsub of Object.values(current)) unsub();
+      rsvpUnsubsRef.current = {};
+    };
+  }, [visibleIds]);
 
   const { soon, rest, scheduleScores } = useMemo(() => {
     const filtered = events.filter((e) => matchesSearch(e, search));
@@ -176,6 +210,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
                     variant="soon"
                     scheduleTags={scheduleScores?.[event.id]?.tags}
                     onQuickView={setQuickViewEvent}
+                    rsvpCount={rsvpCounts[event.id]}
                   />
                 ))}
               </div>
@@ -197,6 +232,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
                     event={event}
                     scheduleTags={scheduleScores?.[event.id]?.tags}
                     onQuickView={setQuickViewEvent}
+                    rsvpCount={rsvpCounts[event.id]}
                   />
                 ))}
               </div>

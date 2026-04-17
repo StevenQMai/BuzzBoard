@@ -12,6 +12,7 @@ type Props = {
   variant?: "default" | "soon";
   onQuickView?: (event: Event) => void;
   scheduleTags?: string[];
+  rsvpCount?: number;
 };
 
 function EyeIcon({ className }: { className?: string }) {
@@ -39,21 +40,23 @@ function EyeIcon({ className }: { className?: string }) {
   );
 }
 
+const DARK_BANNER = "dark:from-[#2c1f14] dark:to-[#1e1510]";
+
 const PASTEL_GRADIENTS: Record<string, string> = {
-  Tech: "from-blue-100 to-indigo-100 dark:from-blue-500/10 dark:to-indigo-500/10",
-  Social: "from-pink-100 to-rose-100 dark:from-pink-500/10 dark:to-rose-500/10",
-  Sports: "from-emerald-100 to-teal-100 dark:from-emerald-500/10 dark:to-teal-500/10",
-  Music: "from-violet-100 to-purple-100 dark:from-violet-500/10 dark:to-purple-500/10",
-  Food: "from-orange-100 to-amber-100 dark:from-amber-400/10 dark:to-orange-500/10",
-  Workshop: "from-cyan-100 to-sky-100 dark:from-cyan-500/10 dark:to-sky-500/10",
-  Career: "from-slate-100 to-zinc-100 dark:from-zinc-500/10 dark:to-zinc-400/10",
+  Tech:     `from-blue-100 to-indigo-100 ${DARK_BANNER}`,
+  Social:   `from-pink-100 to-rose-100 ${DARK_BANNER}`,
+  Sports:   `from-emerald-100 to-teal-100 ${DARK_BANNER}`,
+  Music:    `from-violet-100 to-purple-100 ${DARK_BANNER}`,
+  Food:     `from-orange-100 to-amber-100 ${DARK_BANNER}`,
+  Workshop: `from-cyan-100 to-sky-100 ${DARK_BANNER}`,
+  Career:   `from-slate-100 to-zinc-100 ${DARK_BANNER}`,
 };
 
 function getBannerGradient(category: string): string {
   for (const [key, val] of Object.entries(PASTEL_GRADIENTS)) {
     if (category.toLowerCase().includes(key.toLowerCase())) return val;
   }
-  return "from-amber-100 to-yellow-100 dark:from-amber-400/15 dark:to-amber-500/10";
+  return `from-amber-100 to-yellow-100 ${DARK_BANNER}`;
 }
 
 export default function EventCard({
@@ -61,6 +64,7 @@ export default function EventCard({
   variant = "default",
   onQuickView,
   scheduleTags,
+  rsvpCount,
 }: Props) {
   const showToday = shouldShowTodayTimeBadge(event);
   const rel = showToday ? null : relativeStartsIn(event);
@@ -193,18 +197,28 @@ export default function EventCard({
         </div>
 
         {/* Footer */}
-        <div className="mt-auto flex items-center justify-between">
-          <span className="truncate text-xs text-zinc-400 dark:text-zinc-500">
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <span className="min-w-0 truncate text-xs text-zinc-400 dark:text-zinc-500">
             {event.Host_display_name
               ? `by ${event.Host_display_name}`
               : event.Organization || ""}
           </span>
-          <Link
-            href={`/events/${event.id}`}
-            className="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
-          >
-            View Details
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            {rsvpCount !== undefined && rsvpCount > 0 && (
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM1.49 15.326a.78.78 0 0 1-.358-.442 3 3 0 0 1 4.308-3.516 6.484 6.484 0 0 0-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 0 1-2.07-.655ZM16.44 15.98a4.97 4.97 0 0 0 2.07-.654.78.78 0 0 0 .357-.442 3 3 0 0 0-4.308-3.517 6.484 6.484 0 0 1 1.907 3.96 2.32 2.32 0 0 1-.026.654ZM18 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5.304 16.19a.844.844 0 0 1-.277-.71 5 5 0 0 1 9.947 0 .843.843 0 0 1-.277.71A6.975 6.975 0 0 1 10 18a6.974 6.974 0 0 1-4.696-1.81Z" />
+                </svg>
+                {rsvpCount}
+              </span>
+            )}
+            <Link
+              href={`/events/${event.id}`}
+              className="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
+            >
+              View Details
+            </Link>
+          </div>
         </div>
       </div>
     </article>

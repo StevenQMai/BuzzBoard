@@ -28,14 +28,6 @@
   font-family: var(--font-logo), cursive;
 }
 
-.logo-stroke {
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.7);
-  paint-order: stroke fill;
-}
-
-.dark .logo-stroke {
-  -webkit-text-stroke: none;
-}
 
 /* ---------- Liquid glass (app shell) ---------- */
 

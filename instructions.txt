@@ -1,0 +1,41 @@
+You’re working in the BuzzBoard repo (Next.js client in `client/`). A previous change added a navbar search with a dropdown component: `client/src/components/NavSearch.tsx`, wired into `client/src/components/Navbar.tsx`. The intended behavior is: as the user types, the dropdown should show event suggestions whose titles match the current input (and clicking/Enter should navigate to `/home?q=...#events-feed`). Right now, the dropdown does not display proper event matches for the currently typed words.
+
+Goal
+Fix the search dropdown so it reliably shows event suggestions matching the current input (at minimum by `Event.Title`, ideally also by `Category`, `Location`, `Organization`), and updates instantly as the user types.
+
+Constraints / project rules
+- Do not put filters in the navbar. Filters belong on event-list pages (e.g. `/home` search row), not on `/events/[id]`.
+- Navbar search must never be a dead control.
+- Keep styling consistent with the existing glass / Tailwind theme.
+- Keep behavior: submitting from event details navigates to `/home?q=...#events-feed`.
+
+Where to look
+- `client/src/components/NavSearch.tsx` (dropdown suggestions + filtering/scoring)
+- `client/src/components/Navbar.tsx` (wiring + navigation on submit)
+- `client/src/lib/utils.ts` (`fetchEvents()`)
+
+What to implement/fix
+1) Ensure events are actually being fetched and stored in `NavSearch`:
+   - Verify `fetchEvents()` is called once and populates `events`.
+   - Add robust error handling so a fetch failure doesn’t silently kill suggestions (at least log in dev).
+2) Fix matching logic so typing “foo” shows events whose `Title` contains “foo” (case-insensitive).
+   - The dropdown must update on every keystroke.
+   - If current logic is too strict (e.g. only prefix matching), change it to include substring matching with sensible ranking.
+3) Guarantee dropdown renders when it should:
+   - When input is focused and query is non-empty, show dropdown if there are any matches.
+   - If there are no matches, either show a “No results” row or keep it closed (pick one and implement consistently).
+4) Selection behavior:
+   - Arrow keys move the active suggestion.
+   - Enter selects the active suggestion, otherwise submits the raw query.
+   - Clicking a suggestion submits that suggestion’s query value.
+5) Acceptance criteria
+   - Typing a substring of an existing event title shows it in the dropdown.
+   - Dropdown suggestions change as the user types (no stale results).
+   - Works on `/events/[id]` navbar search (local state) and any page that passes `setSearch` (controlled mode).
+   - `npm run build` in `client/` passes.
+
+Deliverables
+- A code change that fixes dropdown matching/display for event suggestions.
+- Briefly summarize what was wrong and what you changed.
+- Include a short manual test plan (steps to verify locally).
+
