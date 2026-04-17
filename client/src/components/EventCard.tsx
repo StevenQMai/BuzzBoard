@@ -40,21 +40,23 @@ function EyeIcon({ className }: { className?: string }) {
   );
 }
 
+const DARK_BANNER = "dark:from-[#2c1f14] dark:to-[#1e1510]";
+
 const PASTEL_GRADIENTS: Record<string, string> = {
-  Tech: "from-blue-100 to-indigo-100 dark:from-blue-500/10 dark:to-indigo-500/10",
-  Social: "from-pink-100 to-rose-100 dark:from-pink-500/10 dark:to-rose-500/10",
-  Sports: "from-emerald-100 to-teal-100 dark:from-emerald-500/10 dark:to-teal-500/10",
-  Music: "from-violet-100 to-purple-100 dark:from-violet-500/10 dark:to-purple-500/10",
-  Food: "from-orange-100 to-amber-100 dark:from-amber-400/10 dark:to-orange-500/10",
-  Workshop: "from-cyan-100 to-sky-100 dark:from-cyan-500/10 dark:to-sky-500/10",
-  Career: "from-slate-100 to-zinc-100 dark:from-zinc-500/10 dark:to-zinc-400/10",
+  Tech:     `from-blue-100 to-indigo-100 ${DARK_BANNER}`,
+  Social:   `from-pink-100 to-rose-100 ${DARK_BANNER}`,
+  Sports:   `from-emerald-100 to-teal-100 ${DARK_BANNER}`,
+  Music:    `from-violet-100 to-purple-100 ${DARK_BANNER}`,
+  Food:     `from-orange-100 to-amber-100 ${DARK_BANNER}`,
+  Workshop: `from-cyan-100 to-sky-100 ${DARK_BANNER}`,
+  Career:   `from-slate-100 to-zinc-100 ${DARK_BANNER}`,
 };
 
 function getBannerGradient(category: string): string {
   for (const [key, val] of Object.entries(PASTEL_GRADIENTS)) {
     if (category.toLowerCase().includes(key.toLowerCase())) return val;
   }
-  return "from-amber-100 to-yellow-100 dark:from-amber-400/15 dark:to-amber-500/10";
+  return `from-amber-100 to-yellow-100 ${DARK_BANNER}`;
 }
 
 export default function EventCard({
