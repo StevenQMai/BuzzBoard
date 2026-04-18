@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import { getBannerGradient } from "@/components/EventCard";
 import { fetchEventById, type Event } from "@/lib/utils";
 import {
   formatEventDateHeading,
@@ -64,6 +65,7 @@ export default function EventDetailPage() {
   )}`;
   const rel = relativeStartsIn(event);
   const past = isPastEvent(event);
+  const gradient = getBannerGradient(event.Category || "");
 
   return (
     <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
@@ -77,14 +79,14 @@ export default function EventDetailPage() {
           ← Back
         </button>
 
-        <div className="glass-surface rounded-[28px] border-2 border-gray-500 p-6 transition-colors duration-300 dark:border-gray-500">
+        <div className={`bg-linear-to-br ${gradient} rounded-[28px] border-2 border-gray-500 p-6 transition-colors duration-300 dark:border-gray-500`}>
           <div className="grid gap-8 lg:min-h-[70vh] lg:grid-cols-[360px_1fr] lg:items-stretch">
             <div className="flex flex-col gap-6">
-              <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
+              <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 bg-white/60 text-sm text-zinc-500 dark:border-gray-500 dark:bg-zinc-800 dark:text-zinc-400">
                 pic
               </div>
 
-              <div className="glass-surface rounded-2xl border-2 border-gray-500 p-4 dark:border-gray-500">
+              <div className="rounded-2xl border-2 border-gray-500 bg-white/60 p-4 dark:border-gray-500 dark:bg-zinc-800">
                 <p className="mb-3 text-sm font-semibold text-zinc-800 dark:text-zinc-200">
                   {rsvpCount} {rsvpCount === 1 ? "person" : "people"} going
                 </p>

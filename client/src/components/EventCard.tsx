@@ -40,7 +40,7 @@ function EyeIcon({ className }: { className?: string }) {
   );
 }
 
-const DARK_BANNER = "dark:from-[#2c1f14] dark:to-[#1e1510]";
+const DARK_BANNER = "dark:from-[#B87D4B] dark:to-[#B87D4B]";
 
 const PASTEL_GRADIENTS: Record<string, string> = {
   Tech:     `from-blue-100 to-indigo-100 ${DARK_BANNER}`,
@@ -52,7 +52,7 @@ const PASTEL_GRADIENTS: Record<string, string> = {
   Career:   `from-slate-100 to-zinc-100 ${DARK_BANNER}`,
 };
 
-function getBannerGradient(category: string): string {
+export function getBannerGradient(category: string): string {
   for (const [key, val] of Object.entries(PASTEL_GRADIENTS)) {
     if (category.toLowerCase().includes(key.toLowerCase())) return val;
   }
@@ -124,7 +124,7 @@ export default function EventCard({
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col px-4 pt-4 pb-4">
+      <div className="flex flex-1 flex-col px-4 pt-4 pb-4 bg-amber-50 dark:bg-zinc-800">
         {/* Title */}
         <h3 className="mb-3">
           <Link
