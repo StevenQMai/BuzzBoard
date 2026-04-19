@@ -4,8 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { doc, onSnapshot } from "firebase/firestore";
+import { ensureUserDoc } from "@/lib/friendsStore";
+import type { UserStatus } from "@/lib/presenceStore";
+
+function ownStatusDot(status: UserStatus): string {
+  switch (status) {
+    case "idle": return "bg-amber-400";
+    case "dnd": return "bg-red-500";
+    case "invisible": return "bg-zinc-400";
+    default: return "bg-emerald-500";
+  }
+}
 import DarkModeToggle from "./DarkModeToggle";
 import FriendsSidebar from "./FriendsSidebar";
 import { useFriends } from "@/hooks/useFriends";
@@ -26,14 +38,24 @@ export default function Navbar({
   const [user, setUser] = useState<User | null>(null);
   const [friendsOpen, setFriendsOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState("");
+  const [ownStatus, setOwnStatus] = useState<UserStatus>("online");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      if (currentUser) ensureUserDoc(currentUser).catch(() => {});
     });
-
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
+      const status = snap.data()?.presence?.status as UserStatus | undefined;
+      if (status) setOwnStatus(status);
+    });
+    return () => unsub();
+  }, [user?.uid]);
 
   const { pendingRequests } = useFriends(user?.uid ?? null);
 
@@ -141,17 +163,20 @@ export default function Navbar({
               href="/profile"
               className="inline-flex h-10 max-w-[200px] shrink-0 items-center gap-2 rounded-xl border-2 border-gray-400 px-3 text-sm leading-none transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
             >
-              {user.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt=""
-                  className="h-6 w-6 shrink-0 rounded-full object-cover"
-                />
-              ) : (
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-300 text-xs font-semibold uppercase text-zinc-700 dark:bg-zinc-600 dark:text-zinc-100">
-                  {(user.email ?? "U").charAt(0)}
-                </span>
-              )}
+              <div className="relative shrink-0">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt=""
+                    className="h-6 w-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-300 text-xs font-semibold uppercase text-zinc-700 dark:bg-zinc-600 dark:text-zinc-100">
+                    {(user.email ?? "U").charAt(0)}
+                  </span>
+                )}
+                <span className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-[1.5px] border-white dark:border-zinc-800 ${ownStatusDot(ownStatus)}`} />
+              </div>
               <span className="min-w-0 truncate font-medium text-black dark:text-white">
                 {user.displayName || "User"}
               </span>

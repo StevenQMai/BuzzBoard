@@ -10,7 +10,7 @@ export const CAMPUS_CENTER: LatLng = { lat: 33.7756, lng: -84.3963 };
 export const GT_BUILDINGS: Record<string, LatLng> = {
   klaus: { lat: 33.7774, lng: -84.3973 },
   clough: { lat: 33.7748, lng: -84.3966 },
-  instructional_center: { lat: 33.7758, lng: -84.3993 },
+  instructional_center: { lat: 33.7754, lng: -84.4013 },
   culc: { lat: 33.7748, lng: -84.3966 },
   van_leer: { lat: 33.7766, lng: -84.3979 },
   howey: { lat: 33.7778, lng: -84.3988 },

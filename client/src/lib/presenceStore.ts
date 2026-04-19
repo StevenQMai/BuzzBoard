@@ -2,12 +2,15 @@ import { doc, onSnapshot, setDoc, serverTimestamp, type Unsubscribe } from "fire
 import { db } from "@/lib/firebase";
 import { GT_BUILDINGS, haversineDistanceMeters, type LatLng } from "@/lib/campusBuildings";
 
+export type UserStatus = "online" | "idle" | "dnd" | "invisible";
+
 export type Presence = {
   buildingKey: string | null;
   buildingLabel: string;
   lat: number;
   lng: number;
   isOnline: boolean;
+  status: UserStatus;
   lastSeen: unknown;
 };
 
@@ -18,6 +21,24 @@ export type FriendPresence = {
   photoURL: string | null;
   presence: Presence | null;
 };
+
+export function statusDotClass(presence: Presence | null | undefined): string {
+  if (!presence?.isOnline) return "bg-zinc-400";
+  switch (presence.status) {
+    case "idle": return "bg-amber-400";
+    case "dnd": return "bg-red-500";
+    default: return "bg-emerald-500";
+  }
+}
+
+export function statusDotStyle(presence: Presence | null | undefined): string {
+  if (!presence?.isOnline) return "#a1a1aa";
+  switch (presence.status) {
+    case "idle": return "#fbbf24";
+    case "dnd": return "#ef4444";
+    default: return "#10b981";
+  }
+}
 
 const SNAP_THRESHOLD_METERS = 200;
 
@@ -67,6 +88,7 @@ export async function updatePresence(
   buildingLabel: string,
   lat: number,
   lng: number,
+  status: UserStatus = "online",
 ): Promise<void> {
   const ref = doc(db, "users", uid);
   await setDoc(
@@ -78,6 +100,22 @@ export async function updatePresence(
         lat,
         lng,
         isOnline: true,
+        status,
+        lastSeen: serverTimestamp(),
+      },
+    },
+    { merge: true },
+  );
+}
+
+export async function setUserStatus(uid: string, status: UserStatus): Promise<void> {
+  const ref = doc(db, "users", uid);
+  await setDoc(
+    ref,
+    {
+      presence: {
+        status,
+        isOnline: status !== "invisible",
         lastSeen: serverTimestamp(),
       },
     },
@@ -118,14 +156,14 @@ export function subscribePresence(
           displayName?: string;
           email?: string;
           photoURL?: string;
-          presence?: Presence;
+          presence?: Partial<Presence>;
         };
         presenceMap.set(uid, {
           uid,
           displayName: data.displayName || data.email?.split("@")[0] || "User",
           email: data.email || "",
           photoURL: data.photoURL || null,
-          presence: data.presence || null,
+          presence: data.presence ? (data.presence as Presence) : null,
         });
       }
       callback(new Map(presenceMap));
