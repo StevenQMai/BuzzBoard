@@ -9,9 +9,10 @@ Usage:
     python scrape_gt_events.py
 
 Output:
-    gt_events_output.csv  — ready to merge into your BuzzBoard template
+    gt_events_output.csv 
 """
 
+import re
 import requests
 import pandas as pd
 from datetime import datetime, timezone
@@ -40,27 +41,35 @@ def parse_iso(iso: str) -> tuple[str, str]:
     if not iso:
         return "N/A", "N/A"
     try:
-        # Python 3.7+ handles offset-aware ISO strings
         dt = datetime.fromisoformat(iso)
-        date_str = dt.strftime("%B %d %Y").replace(" 0", " ")  # strip leading zero
+        date_str = dt.strftime("%B %d %Y").replace(" 0", " ")
         time_str = dt.strftime("%I:%M %p").lstrip("0")
         return date_str, time_str
     except ValueError:
         return iso, "N/A"
 
 
-def fetch_page(skip: int) -> dict:
+def fetch_page(skip: int, retries: int = 3) -> dict:
     params = {
-        "endsAfter": datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z"),
-        "orderByField": "startsOn",
+        # Use actual current UTC time so already-ended events today are excluded
+        "endsAfter":        datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        # Wide upper bound — captures events scheduled years out
+        "startsBefore":     "2030-01-01T00:00:00Z",
+        "orderByField":     "startsOn",
         "orderByDirection": "ascending",
-        "status": "Approved",
-        "take": PAGE_SIZE,
-        "skip": skip,
+        "status":           "Approved",
+        "take":             PAGE_SIZE,
+        "skip":             skip,
     }
-    resp = requests.get(API_URL, headers=HEADERS, params=params, timeout=15)
-    resp.raise_for_status()
-    return resp.json()
+    for attempt in range(retries):
+        try:
+            resp = requests.get(API_URL, headers=HEADERS, params=params, timeout=15)
+            resp.raise_for_status()
+            return resp.json()
+        except requests.exceptions.RequestException as e:
+            print(f"  Retry {attempt + 1}/{retries} after error: {e}")
+            if attempt == retries - 1:
+                raise
 
 
 def fetch_all_events() -> list[dict]:
@@ -71,22 +80,24 @@ def fetch_all_events() -> list[dict]:
         print(f"  Fetching events {skip + 1}–{skip + PAGE_SIZE}…")
         try:
             data = fetch_page(skip)
-        except Exception as e:
-            print(f"  API error: {e}")
+        except requests.exceptions.HTTPError as e:
+            print(f"  HTTP error: {e} — the API may require authentication.")
+            break
+        except requests.exceptions.RequestException as e:
+            print(f"  Network error after all retries: {e}")
             break
 
         items = data.get("value", [])
         if not items:
+            # Empty page = no more events, clean exit
             print("  No more events.")
             break
 
         events.extend(items)
         skip += PAGE_SIZE
 
-        # Campus Labs returns total count — stop early if we have everything
-        total = data.get("@odata.count", None)
-        if total is not None and skip >= total:
-            break
+        # Removed @odata.count early-stop — empty page is the only exit condition
+        # so we never cut short due to an inaccurate API total
 
     return events[:MAX_EVENTS]
 
@@ -101,26 +112,23 @@ def parse_event(item: dict) -> dict:
     # Description: strip HTML tags if present
     desc = item.get("description", "") or "N/A"
     if "<" in desc:
-        import re
         desc = re.sub(r"<[^>]+>", " ", desc).strip()
         desc = re.sub(r"\s+", " ", desc)
 
-    # Location: prefer address string, fall back to location name
-    location = (
-        item.get("address", {}) or {}
-    )
+    # Guard against address being a string instead of a dict
+    address = item.get("address") or {}
+    if not isinstance(address, dict):
+        address = {}
+
     location_str = (
-        location.get("name")
-        or location.get("line1")
+        address.get("name")
+        or address.get("line1")
         or item.get("location", "")
         or "N/A"
     )
 
-    # Organization
-    org = item.get("organizationName") or "N/A"
-
-    # Category / themes
-    themes = item.get("themes", []) or []
+    org      = item.get("organizationName") or "N/A"
+    themes   = item.get("themes", []) or []
     category = ", ".join(t.get("name", "") for t in themes if t.get("name")) or "N/A"
 
     return {
@@ -132,7 +140,7 @@ def parse_event(item: dict) -> dict:
         "Location":     location_str,
         "Organization": org,
         "Category":     category,
-        "url": f"https://{SCHOOL}.campuslabs.com/engage/event/{item.get('id', '')}",
+        "url":          f"https://{SCHOOL}.campuslabs.com/engage/event/{item.get('id', '')}",
     }
 
 
@@ -150,7 +158,7 @@ def main():
 
     if not raw_events:
         print("No events returned. The API may require authentication or the URL changed.")
-        print(f"Try opening this in your browser to check:\n  {API_URL}?take=5&status=Approved")
+        print(f"Try opening this in your browser while logged in:\n  {API_URL}?take=5&status=Approved")
         return
 
     parsed = [parse_event(e) for e in raw_events]
@@ -161,9 +169,11 @@ def main():
     df["Approved (bool)"]   = "TRUE"
     df["Created_at"]        = datetime.today().strftime("%B %d %Y")
 
-    cols = ["Id", "Title", "Description", "Date", "Start_time", "End_time",
-            "Location", "Organization", "Category",
-            "Submission_source", "Approved (bool)", "Created_at"]
+    cols = [
+        "Id", "Title", "Description", "Date", "Start_time", "End_time",
+        "Location", "Organization", "Category", "url",
+        "Submission_source", "Approved (bool)", "Created_at",
+    ]
     df = df[[c for c in cols if c in df.columns]]
     df.to_csv(OUTPUT_CSV, index=False)
 
@@ -173,4 +183,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
