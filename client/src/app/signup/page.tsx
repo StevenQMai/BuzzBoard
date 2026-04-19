@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ensureUserDoc } from "@/lib/friendsStore";
 import Image from "next/image";
 
 export default function SignupPage() {
@@ -34,6 +35,7 @@ export default function SignupPage() {
         photoURL: profilePicture || "",
       });
 
+      await ensureUserDoc(userCredential.user);
       router.push("/home");
     } catch (err: any) {
       setError(err.message);

@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  getDoc,
   onSnapshot,
   query,
   serverTimestamp,
@@ -22,6 +23,9 @@ export type FriendRequest = {
   fromName: string;
   fromEmail: string;
   fromPhoto: string | null;
+  toName: string;
+  toEmail: string;
+  toPhoto: string | null;
   status: "pending" | "accepted" | "rejected";
   createdAt: unknown;
 };
@@ -59,12 +63,18 @@ export async function sendFriendRequest(fromUser: User, toUid: string): Promise<
   );
   if (!reverse.empty) return;
 
+  const toSnap = await getDoc(doc(db, "users", toUid));
+  const toData = toSnap.data() as { displayName?: string; email?: string; photoURL?: string } | undefined;
+
   await addDoc(collection(db, "friendRequests"), {
     from: fromUser.uid,
     to: toUid,
     fromName: fromUser.displayName || fromUser.email?.split("@")[0] || "User",
     fromEmail: fromUser.email || "",
     fromPhoto: fromUser.photoURL || null,
+    toName: toData?.displayName || toData?.email?.split("@")[0] || "User",
+    toEmail: toData?.email || "",
+    toPhoto: toData?.photoURL || null,
     status: "pending",
     createdAt: serverTimestamp(),
   });
@@ -87,6 +97,19 @@ export async function rejectFriendRequest(requestId: string): Promise<void> {
 export async function removeFriend(uid: string, friendUid: string): Promise<void> {
   await deleteDoc(doc(db, "users", uid, "friends", friendUid));
   await deleteDoc(doc(db, "users", friendUid, "friends", uid));
+}
+
+export async function ensureUserDoc(user: User): Promise<void> {
+  const ref = doc(db, "users", user.uid);
+  await setDoc(
+    ref,
+    {
+      displayName: user.displayName || user.email?.split("@")[0] || "User",
+      email: user.email || "",
+      photoURL: user.photoURL || null,
+    },
+    { merge: true },
+  );
 }
 
 export async function searchUsers(queryStr: string): Promise<UserSearchResult[]> {
@@ -138,4 +161,24 @@ export function subscribeFriendRequests(
     snap.forEach((d) => requests.push({ id: d.id, ...d.data() } as FriendRequest));
     callback(requests);
   });
+}
+
+export function subscribeOutgoingRequests(
+  uid: string,
+  callback: (requests: FriendRequest[]) => void,
+): Unsubscribe {
+  const q = query(
+    collection(db, "friendRequests"),
+    where("from", "==", uid),
+    where("status", "==", "pending"),
+  );
+  return onSnapshot(q, (snap) => {
+    const requests: FriendRequest[] = [];
+    snap.forEach((d) => requests.push({ id: d.id, ...d.data() } as FriendRequest));
+    callback(requests);
+  });
+}
+
+export async function cancelFriendRequest(requestId: string): Promise<void> {
+  await deleteDoc(doc(db, "friendRequests", requestId));
 }

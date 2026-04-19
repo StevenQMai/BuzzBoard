@@ -31,7 +31,7 @@ export default function EventDetailPage() {
 
   if (error === "not_found") {
     return (
-      <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
+      <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
         <Navbar />
         <div className="mx-auto max-w-2xl px-6 py-20 text-center">
           <p className="mb-6 text-lg text-zinc-600 dark:text-zinc-300">
@@ -50,7 +50,7 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
+      <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
         <Navbar />
         <div className="mx-auto max-w-2xl px-6 py-20">
           <div className="h-8 w-2/3 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
@@ -68,25 +68,27 @@ export default function EventDetailPage() {
   const gradient = getBannerGradient(event.Category || "");
 
   return (
-    <main className="min-h-screen bg-[#fefcf3] dark:bg-[#111111]">
+    <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar />
       <article className="mx-auto w-full max-w-[92%] px-4 pb-16 pt-8 lg:px-8">
         <button
           type="button"
           onClick={() => router.back()}
-          className="glass-surface mb-6 rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-zinc-500 transition hover:text-zinc-800 dark:border-gray-500 dark:text-zinc-400 dark:hover:text-zinc-200"
+          className="glass-surface mb-6 rounded-xl border-2 border-gray-500 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
         >
           ← Back
         </button>
 
-        <div className={`bg-linear-to-br ${gradient} rounded-[28px] border-2 border-gray-500 p-6 transition-colors duration-300 dark:border-gray-500`}>
+        <div
+          className={`bg-linear-to-br ${gradient} rounded-[28px] border-2 border-gray-500 p-6 shadow-sm transition-colors duration-300 dark:border-gray-500`}
+        >
           <div className="grid gap-8 lg:min-h-[70vh] lg:grid-cols-[360px_1fr] lg:items-stretch">
             <div className="flex flex-col gap-6">
-              <div className="flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 bg-white/60 text-sm text-zinc-500 dark:border-gray-500 dark:bg-zinc-800 dark:text-zinc-400">
+              <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
                 pic
               </div>
 
-              <div className="rounded-2xl border-2 border-gray-500 bg-white/60 p-4 dark:border-gray-500 dark:bg-zinc-800">
+              <div className="glass-surface rounded-2xl border-2 border-gray-500 p-4 dark:border-gray-500">
                 <p className="mb-3 text-sm font-semibold text-zinc-800 dark:text-zinc-200">
                   {rsvpCount} {rsvpCount === 1 ? "person" : "people"} going
                 </p>
@@ -126,37 +128,39 @@ export default function EventDetailPage() {
                 {event.Title}
               </h1>
 
-              <div className="glass-surface mt-8 flex-1 rounded-2xl border-2 border-gray-500 p-5 text-sm text-zinc-700 dark:border-gray-500 dark:text-zinc-200">
-                <p className="font-medium text-zinc-900 dark:text-white">
-                  {formatEventDateHeading(event)} · {formatTimeRange(event)}
-                </p>
-                <p className="mt-2">
-                  <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline decoration-zinc-300 underline-offset-4 transition hover:decoration-zinc-600 dark:decoration-zinc-600 dark:hover:decoration-zinc-300"
-                  >
-                    {event.Location}
-                  </a>
-                </p>
-                <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-                  {event.Description || "description/time/place"}
-                </p>
+              <div className="glass-surface mt-8 flex-1 rounded-2xl border-2 border-gray-500 p-4 text-sm text-zinc-700 dark:border-gray-500 dark:text-zinc-200">
+                <div className="rounded-2xl border border-zinc-200 bg-white/55 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
+                  <p className="font-medium text-zinc-900 dark:text-white">
+                    {formatEventDateHeading(event)} · {formatTimeRange(event)}
+                  </p>
+                  <p className="mt-2">
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline decoration-zinc-300 underline-offset-4 transition hover:decoration-zinc-600 dark:decoration-zinc-600 dark:hover:decoration-zinc-300"
+                    >
+                      {event.Location}
+                    </a>
+                  </p>
+                  <p className="mt-2 text-zinc-600 dark:text-zinc-300">
+                    {event.Description || "description/time/place"}
+                  </p>
 
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <span className="glass-surface rounded-full border border-gray-300 px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:text-zinc-200">
-                    {event.Category || "categories"}
-                  </span>
-                  {rel && !past ? (
-                    <span className="text-xs font-semibold text-amber-500">
-                      {rel}
+                  <div className="mt-4 flex items-center justify-between gap-3">
+                    <span className="rounded-full border border-gray-300 bg-white/65 px-3 py-1 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:bg-[#111111]/40 dark:text-zinc-200">
+                      {event.Category || "categories"}
                     </span>
-                  ) : (
-                    <span className="text-xs font-medium text-zinc-400">
-                      {past ? "Ended" : ""}
-                    </span>
-                  )}
+                    {rel && !past ? (
+                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                        {rel}
+                      </span>
+                    ) : (
+                      <span className="text-xs font-medium text-zinc-400">
+                        {past ? "Ended" : ""}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -190,13 +194,13 @@ export default function EventDetailPage() {
               </div>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <span className="glass-surface rounded-xl border-2 border-gray-500 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:text-zinc-200">
+                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
                   {event.Category || "Ex Tag"}
                 </span>
-                <span className="glass-surface rounded-xl border-2 border-gray-500 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:text-zinc-200">
+                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
                   Ex Tag
                 </span>
-                <span className="glass-surface rounded-xl border-2 border-gray-500 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-gray-500 dark:text-zinc-200">
+                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
                   Ex Tag
                 </span>
               </div>

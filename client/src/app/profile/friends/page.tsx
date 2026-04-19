@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useFriends, type FriendPresence, type FriendRequest } from "@/hooks/useFriends";
+import { statusDotClass } from "@/lib/presenceStore";
 import {
   searchUsers,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  cancelFriendRequest,
   removeFriend,
   type UserSearchResult,
 } from "@/lib/friendsStore";
@@ -25,6 +27,28 @@ function Avatar({ photoURL, name, size = "h-10 w-10" }: { photoURL: string | nul
   );
 }
 
+function LocationBadge({ presence }: { presence: FriendPresence["presence"] }) {
+  if (!presence?.isOnline) return null;
+
+  if (presence.buildingKey) {
+    return (
+      <span className="shrink-0 rounded-lg bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+        <svg className="mr-0.5 inline-block h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+        </svg>
+        {presence.buildingLabel}
+      </span>
+    );
+  }
+
+  return (
+    <span className="shrink-0 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
+      Off campus
+    </span>
+  );
+}
+
 export default function FriendsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,7 +61,7 @@ export default function FriendsPage() {
     return () => unsub();
   }, []);
 
-  const { friends, pendingRequests, loading } = useFriends(user?.uid ?? null);
+  const { friends, pendingRequests, outgoingRequests, loading } = useFriends(user?.uid ?? null);
 
   useEffect(() => {
     if (!searchQuery.trim()) { setSearchResults([]); return; }
@@ -51,6 +75,7 @@ export default function FriendsPage() {
   }, [searchQuery, user?.uid]);
 
   const friendUids = new Set(friends.map((f) => f.uid));
+  const outgoingToUids = new Set(outgoingRequests.map((r) => r.to));
 
   async function handleSend(toUid: string) {
     if (!user) return;
@@ -66,6 +91,15 @@ export default function FriendsPage() {
     await rejectFriendRequest(req.id);
   }
 
+  async function handleCancel(req: FriendRequest) {
+    await cancelFriendRequest(req.id);
+    setSentTo((prev) => {
+      const next = new Set(prev);
+      next.delete(req.to);
+      return next;
+    });
+  }
+
   async function handleRemove(friendUid: string) {
     if (!user) return;
     await removeFriend(user.uid, friendUid);
@@ -79,7 +113,7 @@ export default function FriendsPage() {
         Friends
       </h1>
 
-      {/* Search */}
+      {/* Search / Add Friends */}
       <div className="glass-surface mb-[clamp(1rem,2vw,1.5rem)] rounded-[clamp(16px,3vw,24px)] border-2 border-zinc-300 p-[clamp(1rem,3vw,1.5rem)] dark:border-zinc-600">
         <h2 className="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">Add Friends</h2>
         <input
@@ -99,7 +133,7 @@ export default function FriendsPage() {
             ) : (
               searchResults.map((r) => {
                 const isFriend = friendUids.has(r.uid);
-                const isSent = sentTo.has(r.uid);
+                const isSent = sentTo.has(r.uid) || outgoingToUids.has(r.uid);
                 return (
                   <div key={r.uid} className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
                     <Avatar photoURL={r.photoURL} name={r.displayName} size="h-9 w-9" />
@@ -124,11 +158,11 @@ export default function FriendsPage() {
         )}
       </div>
 
-      {/* Pending requests */}
+      {/* Incoming requests */}
       {pendingRequests.length > 0 && (
         <div className="glass-surface mb-[clamp(1rem,2vw,1.5rem)] rounded-[clamp(16px,3vw,24px)] border-2 border-zinc-300 p-[clamp(1rem,3vw,1.5rem)] dark:border-zinc-600">
           <h2 className="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">
-            Pending Requests ({pendingRequests.length})
+            Incoming Requests ({pendingRequests.length})
           </h2>
           <div className="space-y-2">
             {pendingRequests.map((req) => (
@@ -146,6 +180,33 @@ export default function FriendsPage() {
                     Reject
                   </button>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Outgoing requests */}
+      {outgoingRequests.length > 0 && (
+        <div className="glass-surface mb-[clamp(1rem,2vw,1.5rem)] rounded-[clamp(16px,3vw,24px)] border-2 border-zinc-300 p-[clamp(1rem,3vw,1.5rem)] dark:border-zinc-600">
+          <h2 className="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">
+            Sent Requests ({outgoingRequests.length})
+          </h2>
+          <div className="space-y-2">
+            {outgoingRequests.map((req) => (
+              <div key={req.id} className="flex items-center gap-3 rounded-xl px-2 py-2">
+                <Avatar photoURL={req.toPhoto} name={req.toName} size="h-9 w-9" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.toName}</p>
+                  <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.toEmail}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCancel(req)}
+                  className="rounded-lg border border-zinc-300 px-3 py-1 text-xs text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                >
+                  Cancel
+                </button>
               </div>
             ))}
           </div>
@@ -186,29 +247,28 @@ export default function FriendsPage() {
 
 function FriendRow({ friend, onRemove }: { friend: FriendPresence; onRemove: () => void }) {
   const isOnline = friend.presence?.isOnline ?? false;
-  const building = friend.presence?.buildingLabel || "";
+
+  function locationSubtitle() {
+    if (!isOnline) return "Offline";
+    if (friend.presence?.buildingKey) return friend.presence.buildingLabel;
+    return "Off campus";
+  }
 
   return (
     <div className="flex items-center gap-3 rounded-xl px-2 py-2.5 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
       <div className="relative">
         <Avatar photoURL={friend.photoURL} name={friend.displayName} />
         <span
-          className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${
-            isOnline ? "bg-emerald-500" : "bg-zinc-400"
-          }`}
+          className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${statusDotClass(friend.presence)}`}
         />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{friend.displayName}</p>
-        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-          {isOnline ? (building || "Online") : "Offline"}
+        <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">
+          {friend.displayName || "Loading…"}
         </p>
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{locationSubtitle()}</p>
       </div>
-      {isOnline && building && (
-        <span className="shrink-0 rounded-lg bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-          {building}
-        </span>
-      )}
+      <LocationBadge presence={friend.presence} />
       <button
         type="button"
         onClick={onRemove}

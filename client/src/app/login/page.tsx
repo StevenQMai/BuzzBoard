@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ensureUserDoc } from "@/lib/friendsStore";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -20,7 +21,8 @@ export default function LoginPage() {
   const handleSignIn = async () => {
     setError("");
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      await ensureUserDoc(cred.user);
       router.push("/home");
     } catch (err: any) {
       setError(err.message);
@@ -31,7 +33,8 @@ export default function LoginPage() {
     setError("");
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const cred = await signInWithPopup(auth, provider);
+      await ensureUserDoc(cred.user);
       router.push("/home");
     } catch (err: any) {
       setError(err.message);

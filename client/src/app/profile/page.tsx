@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, updateProfile, sendPasswordResetEmail, type User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+import { setUserStatus, type UserStatus } from "@/lib/presenceStore";
 import { loadScheduleFromLocalStorage } from "@/lib/scheduleStore";
 import Link from "next/link";
 
@@ -31,6 +32,7 @@ export default function ProfileAccountPage() {
   const [hasSchedule, setHasSchedule] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<UserStatus>("online");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -52,12 +54,19 @@ export default function ProfileAccountPage() {
     try {
       const snap = await getDoc(doc(db, "users", uid));
       if (snap.exists()) {
-        const data = snap.data() as { organization?: string; bio?: string; interests?: string[] };
+        const data = snap.data() as { organization?: string; bio?: string; interests?: string[]; presence?: { status?: UserStatus } };
         if (data.organization) setOrganization(data.organization);
         if (data.bio) setBio(data.bio);
         if (data.interests) setInterests(data.interests);
+        if (data.presence?.status) setCurrentStatus(data.presence.status);
       }
     } catch { /* ignore */ }
+  }
+
+  async function handleStatusChange(status: UserStatus) {
+    if (!user) return;
+    setCurrentStatus(status);
+    await setUserStatus(user.uid, status);
   }
 
   async function handleUpdateProfile() {
@@ -233,6 +242,45 @@ export default function ProfileAccountPage() {
 
         {/* ── RIGHT COLUMN ── */}
         <div className="flex flex-col gap-[clamp(1rem,2vw,1.5rem)]">
+          {/* Online Status card */}
+          <div className="glass-surface rounded-[clamp(16px,3vw,24px)] border-2 border-zinc-300 p-[clamp(1rem,3vw,1.5rem)] dark:border-zinc-600">
+            <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">Online Status</h2>
+            <div className="space-y-1.5">
+              <StatusOption
+                status="online"
+                label="Online"
+                description=""
+                icon={<span className="h-3 w-3 rounded-full bg-emerald-500" />}
+                active={currentStatus === "online"}
+                onClick={() => handleStatusChange("online")}
+              />
+              <StatusOption
+                status="idle"
+                label="Idle"
+                description=""
+                icon={<IdleIcon />}
+                active={currentStatus === "idle"}
+                onClick={() => handleStatusChange("idle")}
+              />
+              <StatusOption
+                status="dnd"
+                label="Do Not Disturb"
+                description="You will appear busy"
+                icon={<DndIcon />}
+                active={currentStatus === "dnd"}
+                onClick={() => handleStatusChange("dnd")}
+              />
+              <StatusOption
+                status="invisible"
+                label="Invisible"
+                description="You will appear offline"
+                icon={<span className="h-3 w-3 rounded-full border-2 border-zinc-400 bg-transparent dark:border-zinc-500" />}
+                active={currentStatus === "invisible"}
+                onClick={() => handleStatusChange("invisible")}
+              />
+            </div>
+          </div>
+
           {/* Bio card */}
           <div className="glass-surface rounded-[clamp(16px,3vw,24px)] border-2 border-zinc-300 p-[clamp(1rem,3vw,1.5rem)] dark:border-zinc-600">
             <h2 className="mb-3 text-lg font-semibold text-zinc-900 dark:text-white">Bio</h2>
@@ -321,5 +369,59 @@ export default function ProfileAccountPage() {
         </div>
       </div>
     </>
+  );
+}
+
+function IdleIcon() {
+  return (
+    <svg className="h-3.5 w-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6 9.72 9.72 0 0 1 9 2.25c-5.385.932-9 5.738-9 10.5 0 5.799 4.701 10.5 10.5 10.5 4.762 0 9.568-3.615 10.5-9l-.248.252Z" />
+    </svg>
+  );
+}
+
+function DndIcon() {
+  return (
+    <svg className="h-3.5 w-3.5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+type StatusOptionProps = {
+  status: UserStatus;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+};
+
+function StatusOption({ label, description, icon, active, onClick }: StatusOptionProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition ${
+        active
+          ? "bg-zinc-100 dark:bg-zinc-800"
+          : "hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+      }`}
+    >
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center">{icon}</span>
+      <div className="flex-1">
+        <p className={`text-sm font-medium ${active ? "text-zinc-900 dark:text-white" : "text-zinc-700 dark:text-zinc-300"}`}>
+          {label}
+        </p>
+        {description && (
+          <p className="text-xs text-zinc-400 dark:text-zinc-500">{description}</p>
+        )}
+      </div>
+      {active && (
+        <svg className="h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+      )}
+    </button>
   );
 }

@@ -7,6 +7,7 @@ import AddEventButton from "@/components/AddEventButton";
 import LandingSearchBar from "@/components/LandingSearchBar";
 import CategoriesStrip from "@/components/CategoriesStrip";
 import MiniMapPreview from "@/components/MiniMapPreview";
+import FriendsOnlineStrip from "@/components/FriendsOnlineStrip";
 
 function HomeQuerySync({ onQuery }: { onQuery: (q: string) => void }) {
   const params = useSearchParams();
@@ -64,6 +65,7 @@ export default function Home() {
 
             <div id="events-feed" className="mt-[clamp(1.5rem,4vw,2.5rem)]">
               <div className="glass-surface rounded-[clamp(20px,4vw,36px)] border-2 border-gray-500 p-[clamp(1rem,3vw,1.5rem)] transition-colors duration-300 dark:border-gray-500">
+                <FriendsOnlineStrip />
                 <div className="mb-[clamp(1.5rem,3vw,2.5rem)]">
                   <MiniMapPreview />
                 </div>

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   subscribeFriends,
   subscribeFriendRequests,
+  subscribeOutgoingRequests,
   type FriendDoc,
   type FriendRequest,
 } from "@/lib/friendsStore";
@@ -15,6 +16,7 @@ export type { FriendRequest } from "@/lib/friendsStore";
 export type UseFriendsReturn = {
   friends: FriendPresence[];
   pendingRequests: FriendRequest[];
+  outgoingRequests: FriendRequest[];
   loading: boolean;
 };
 
@@ -22,6 +24,7 @@ export function useFriends(uid: string | null): UseFriendsReturn {
   const [friendDocs, setFriendDocs] = useState<FriendDoc[]>([]);
   const [presenceMap, setPresenceMap] = useState<Map<string, FriendPresence>>(new Map());
   const [pendingRequests, setPendingRequests] = useState<FriendRequest[]>([]);
+  const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   const presenceUnsubRef = useRef<(() => void) | null>(null);
@@ -41,9 +44,14 @@ export function useFriends(uid: string | null): UseFriendsReturn {
       setPendingRequests(reqs);
     });
 
+    const unsubOutgoing = subscribeOutgoingRequests(uid, (reqs) => {
+      setOutgoingRequests(reqs);
+    });
+
     return () => {
       unsubFriends();
       unsubRequests();
+      unsubOutgoing();
     };
   }, [uid]);
 
@@ -68,8 +76,22 @@ export function useFriends(uid: string | null): UseFriendsReturn {
   }, [friendDocs]);
 
   const friends: FriendPresence[] = friendDocs
-    .map((fd) => presenceMap.get(fd.uid))
-    .filter(Boolean) as FriendPresence[];
+    .map(
+      (fd): FriendPresence =>
+        presenceMap.get(fd.uid) ?? {
+          uid: fd.uid,
+          displayName: "",
+          email: "",
+          photoURL: null,
+          presence: null,
+        },
+    )
+    .sort((a, b) => {
+      const aOnline = a.presence?.isOnline ? 1 : 0;
+      const bOnline = b.presence?.isOnline ? 1 : 0;
+      if (bOnline !== aOnline) return bOnline - aOnline;
+      return a.displayName.localeCompare(b.displayName);
+    });
 
-  return { friends, pendingRequests, loading };
+  return { friends, pendingRequests, outgoingRequests, loading };
 }

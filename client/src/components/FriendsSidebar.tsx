@@ -4,11 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useFriends, type FriendPresence, type FriendRequest } from "@/hooks/useFriends";
+import { statusDotClass } from "@/lib/presenceStore";
 import {
   searchUsers,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  cancelFriendRequest,
   removeFriend,
   type UserSearchResult,
 } from "@/lib/friendsStore";
@@ -29,13 +31,33 @@ function Avatar({ photoURL, name, size = "h-10 w-10" }: { photoURL: string | nul
   );
 }
 
-function OnlineDot({ isOnline }: { isOnline: boolean }) {
+function StatusDot({ presence }: { presence: FriendPresence["presence"] }) {
   return (
     <span
-      className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${
-        isOnline ? "bg-emerald-500" : "bg-zinc-400"
-      }`}
+      className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${statusDotClass(presence)}`}
     />
+  );
+}
+
+function LocationBadge({ presence }: { presence: FriendPresence["presence"] }) {
+  if (!presence?.isOnline) return null;
+
+  if (presence.buildingKey) {
+    return (
+      <span className="shrink-0 rounded-lg bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+        <svg className="mr-0.5 inline-block h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+        </svg>
+        {presence.buildingLabel}
+      </span>
+    );
+  }
+
+  return (
+    <span className="shrink-0 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
+      Off campus
+    </span>
   );
 }
 
@@ -52,7 +74,7 @@ export default function FriendsSidebar({ open, onClose }: Props) {
     return () => unsub();
   }, []);
 
-  const { friends, pendingRequests, loading } = useFriends(user?.uid ?? null);
+  const { friends, pendingRequests, outgoingRequests, loading } = useFriends(user?.uid ?? null);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -82,12 +104,22 @@ export default function FriendsSidebar({ open, onClose }: Props) {
     await rejectFriendRequest(req.id);
   }
 
+  async function handleCancel(req: FriendRequest) {
+    await cancelFriendRequest(req.id);
+    setSentTo((prev) => {
+      const next = new Set(prev);
+      next.delete(req.to);
+      return next;
+    });
+  }
+
   async function handleRemove(friendUid: string) {
     if (!user) return;
     await removeFriend(user.uid, friendUid);
   }
 
   const friendUids = new Set(friends.map((f) => f.uid));
+  const outgoingToUids = new Set(outgoingRequests.map((r) => r.to));
 
   return (
     <>
@@ -125,7 +157,6 @@ export default function FriendsSidebar({ open, onClose }: Props) {
             className="h-9 w-full rounded-xl border-2 border-zinc-300 bg-transparent px-3 text-sm text-zinc-900 outline-none transition focus:border-amber-400 dark:border-zinc-600 dark:text-white dark:focus:border-amber-500"
           />
 
-          {/* Search results */}
           {searchQuery.trim() && (
             <div className="mt-2 max-h-48 space-y-1 overflow-y-auto">
               {searching ? (
@@ -135,7 +166,7 @@ export default function FriendsSidebar({ open, onClose }: Props) {
               ) : (
                 searchResults.map((r) => {
                   const isFriend = friendUids.has(r.uid);
-                  const isSent = sentTo.has(r.uid);
+                  const isSent = sentTo.has(r.uid) || outgoingToUids.has(r.uid);
                   return (
                     <div key={r.uid} className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
                       <Avatar photoURL={r.photoURL} name={r.displayName} size="h-8 w-8" />
@@ -164,67 +195,96 @@ export default function FriendsSidebar({ open, onClose }: Props) {
           )}
         </div>
 
-        {/* Pending requests */}
-        {pendingRequests.length > 0 && (
-          <div className="border-b-2 border-zinc-300 px-5 py-3 dark:border-zinc-600">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-              Pending Requests ({pendingRequests.length})
-            </p>
-            <div className="space-y-2">
-              {pendingRequests.map((req) => (
-                <div key={req.id} className="flex items-center gap-3">
-                  <Avatar photoURL={req.fromPhoto} name={req.fromName} size="h-8 w-8" />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.fromName}</p>
-                    <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.fromEmail}</p>
+        <div className="flex-1 overflow-y-auto">
+          {/* Incoming requests */}
+          {pendingRequests.length > 0 && (
+            <div className="border-b-2 border-zinc-300 px-5 py-3 dark:border-zinc-600">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                Incoming ({pendingRequests.length})
+              </p>
+              <div className="space-y-2">
+                {pendingRequests.map((req) => (
+                  <div key={req.id} className="flex items-center gap-3">
+                    <Avatar photoURL={req.fromPhoto} name={req.fromName} size="h-8 w-8" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.fromName}</p>
+                      <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.fromEmail}</p>
+                    </div>
+                    <div className="flex shrink-0 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleAccept(req)}
+                        className="rounded-lg bg-emerald-500 px-2 py-1 text-xs font-semibold text-white transition hover:bg-emerald-600"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleReject(req)}
+                        className="rounded-lg border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                      >
+                        Reject
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex shrink-0 gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => handleAccept(req)}
-                      className="rounded-lg bg-emerald-500 px-2 py-1 text-xs font-semibold text-white transition hover:bg-emerald-600"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleReject(req)}
-                      className="rounded-lg border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Friends list */}
-        <div className="flex-1 overflow-y-auto px-5 py-3">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-            Friends ({friends.length})
-          </p>
-
-          {loading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-            </div>
-          ) : friends.length === 0 ? (
-            <p className="py-6 text-center text-sm text-zinc-400 dark:text-zinc-500">
-              No friends yet. Search to add someone!
-            </p>
-          ) : (
-            <div className="space-y-1">
-              {friends.map((friend) => (
-                <FriendRow
-                  key={friend.uid}
-                  friend={friend}
-                  onRemove={() => handleRemove(friend.uid)}
-                />
-              ))}
+                ))}
+              </div>
             </div>
           )}
+
+          {/* Outgoing requests */}
+          {outgoingRequests.length > 0 && (
+            <div className="border-b-2 border-zinc-300 px-5 py-3 dark:border-zinc-600">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                Sent ({outgoingRequests.length})
+              </p>
+              <div className="space-y-2">
+                {outgoingRequests.map((req) => (
+                  <div key={req.id} className="flex items-center gap-3">
+                    <Avatar photoURL={req.toPhoto} name={req.toName} size="h-8 w-8" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.toName}</p>
+                      <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.toEmail}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(req)}
+                      className="shrink-0 rounded-lg border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Friends list */}
+          <div className="px-5 py-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+              Friends ({friends.length})
+            </p>
+
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+              </div>
+            ) : friends.length === 0 ? (
+              <p className="py-6 text-center text-sm text-zinc-400 dark:text-zinc-500">
+                No friends yet. Search to add someone!
+              </p>
+            ) : (
+              <div className="space-y-1">
+                {friends.map((friend) => (
+                  <FriendRow
+                    key={friend.uid}
+                    friend={friend}
+                    onRemove={() => handleRemove(friend.uid)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </aside>
     </>
@@ -234,32 +294,28 @@ export default function FriendsSidebar({ open, onClose }: Props) {
 function FriendRow({ friend, onRemove }: { friend: FriendPresence; onRemove: () => void }) {
   const [showMenu, setShowMenu] = useState(false);
   const isOnline = friend.presence?.isOnline ?? false;
-  const building = friend.presence?.buildingLabel || "";
+
+  function locationSubtitle() {
+    if (!isOnline) return "Offline";
+    if (friend.presence?.buildingKey) return friend.presence.buildingLabel;
+    return "Off campus";
+  }
 
   return (
     <div className="group relative flex items-center gap-3 rounded-xl px-2 py-2.5 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
       <div className="relative">
         <Avatar photoURL={friend.photoURL} name={friend.displayName} />
-        <OnlineDot isOnline={isOnline} />
+        <StatusDot presence={friend.presence} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{friend.displayName}</p>
-        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-          {isOnline ? (building || "Online") : "Offline"}
+        <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">
+          {friend.displayName || "Loading…"}
         </p>
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{locationSubtitle()}</p>
       </div>
 
-      {/* Location pin */}
-      {isOnline && building && (
-        <span className="shrink-0 rounded-lg bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-          <svg className="mr-0.5 inline-block h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-          </svg>
-          {building}
-        </span>
-      )}
+      <LocationBadge presence={friend.presence} />
 
       {/* More menu */}
       <div className="relative">
