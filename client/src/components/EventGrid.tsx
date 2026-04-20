@@ -45,6 +45,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
   const [schedule, setSchedule] = useState<ClassBlock[] | null>(null);
   const [scheduleBump, setScheduleBump] = useState(0);
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+  const [displayedCount, setDisplayedCount] = useState(9);
   const rsvpUnsubsRef = useRef<Record<string, () => void>>({});
 
   // Allow parent components (e.g., ScheduleImportButton) to trigger a resync by
@@ -60,6 +61,11 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
       .then(setEvents)
       .catch(() => setError(true));
   }, [refreshKey]);
+
+  useEffect(() => {
+    // Reset pagination when search changes
+    setDisplayedCount(9);
+  }, [search, refreshKey]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -226,7 +232,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
                 className="grid gap-[clamp(1rem,2vw,1.5rem)]"
                 style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
               >
-                {rest.map((event) => (
+                {rest.slice(0, displayedCount).map((event) => (
                   <EventCard
                     key={event.id}
                     event={event}
@@ -236,6 +242,16 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
                   />
                 ))}
               </div>
+              {displayedCount < rest.length && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setDisplayedCount((n) => n + 9)}
+                    className="rounded-lg bg-amber-600 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600"
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
