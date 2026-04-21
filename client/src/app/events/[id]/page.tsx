@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import { getBannerGradient } from "@/components/EventCard";
 import { fetchEventById, type Event } from "@/lib/utils";
 import {
   formatEventDateHeading,
@@ -52,9 +51,11 @@ export default function EventDetailPage() {
     return (
       <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
         <Navbar />
-        <div className="mx-auto max-w-2xl px-6 py-20">
-          <div className="h-8 w-2/3 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
-          <div className="mt-4 h-4 w-1/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+        <div className="mx-auto w-full max-w-[92%] px-[clamp(1rem,3vw,2rem)] pb-16 pt-8">
+          <div className="glass-surface-strong rounded-[28px] border-2 border-gray-500 p-6">
+            <div className="h-8 w-2/3 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
+            <div className="mt-4 h-4 w-1/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+          </div>
         </div>
       </main>
     );
@@ -65,70 +66,80 @@ export default function EventDetailPage() {
   )}`;
   const rel = relativeStartsIn(event);
   const past = isPastEvent(event);
-  const gradient = getBannerGradient(event.Category || "");
 
   return (
     <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
       <Navbar />
-      <article className="mx-auto w-full max-w-[92%] px-4 pb-16 pt-8 lg:px-8">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="glass-surface mb-6 rounded-xl border-2 border-gray-500 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
-        >
-          ← Back
-        </button>
+      <div className="mx-auto w-full max-w-[92%] px-[clamp(1rem,3vw,2rem)] pb-16 pt-8">
+        {/* Card — same classes as the modal panel */}
+        <div className="glass-surface-strong relative w-full rounded-[28px] border-2 border-gray-500 shadow-2xl transition-colors duration-300 dark:border-gray-500">
 
-        <div
-          className={`bg-linear-to-br ${gradient} rounded-[28px] border-2 border-gray-500 p-6 shadow-sm transition-colors duration-300 dark:border-gray-500`}
-        >
-          <div className="grid gap-8 lg:min-h-[70vh] lg:grid-cols-[360px_1fr] lg:items-stretch">
-            <div className="flex flex-col gap-6">
-              <div className="glass-surface flex aspect-square w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
+          {/* Back button — top-right, same position/style as modal close button */}
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="glass-surface absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-xl border-2 border-gray-500 text-zinc-800 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
+            aria-label="Go back"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              className="h-5 w-5"
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Grid — exact same as modal */}
+          <div className="grid gap-6 px-6 pb-6 pt-6 md:grid-cols-[clamp(260px,28%,380px)_1fr] md:items-stretch">
+
+            {/* Left column */}
+            <div className="flex flex-col">
+              <div className="glass-surface flex aspect-4/3 w-full items-center justify-center rounded-2xl border-2 border-gray-500 text-sm text-zinc-500 dark:border-gray-500 dark:text-zinc-400">
                 pic
               </div>
 
-              <div className="glass-surface rounded-2xl border-2 border-gray-500 p-4 dark:border-gray-500">
-                <p className="mb-3 text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-                  {rsvpCount} {rsvpCount === 1 ? "person" : "people"} going
-                </p>
-                {attendees.length > 0 && (
-                  <div className="flex -space-x-2">
-                    {attendees.slice(0, 8).map((a) =>
-                      a.photoURL ? (
-                        <img
-                          key={a.userId}
-                          src={a.photoURL}
-                          alt={a.displayName}
-                          title={a.displayName}
-                          className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-zinc-800"
-                        />
-                      ) : (
-                        <span
-                          key={a.userId}
-                          title={a.displayName}
-                          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-amber-100 text-xs font-bold text-amber-700 dark:border-zinc-800 dark:bg-amber-900 dark:text-amber-300"
-                        >
-                          {a.displayName.charAt(0).toUpperCase()}
-                        </span>
-                      ),
-                    )}
-                    {attendees.length > 8 && (
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-xs font-semibold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
-                        +{attendees.length - 8}
-                      </span>
-                    )}
-                  </div>
+              <div className="mt-4 flex gap-3">
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={toggle}
+                    className={`h-11 flex-1 cursor-pointer rounded-xl border-2 text-sm font-medium transition duration-200 active:scale-[0.98] ${
+                      isRsvpd
+                        ? "border-amber-500 bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow-md hover:ring-2 hover:ring-amber-300/70 dark:border-amber-400 dark:bg-amber-500 dark:hover:bg-amber-600 dark:hover:ring-amber-200/50"
+                        : "border-gray-300 bg-white/85 text-zinc-900 shadow-sm hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                    }`}
+                  >
+                    {isRsvpd ? `Going ✓ (${rsvpCount})` : rsvpCount > 0 ? `RSVP (${rsvpCount})` : "RSVP"}
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="flex h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-gray-300 bg-white/85 text-sm font-medium text-zinc-900 shadow-sm transition duration-200 hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 active:scale-[0.98] dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
+                  >
+                    Sign in to RSVP
+                  </Link>
                 )}
+                <button
+                  type="button"
+                  className="glass-surface h-11 flex-1 rounded-xl border-2 border-gray-500 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
+                >
+                  Add to Calendar
+                </button>
               </div>
             </div>
 
+            {/* Right column */}
             <div className="flex min-w-0 flex-col">
-              <h1 className="pr-2 text-5xl font-semibold leading-tight tracking-tight text-zinc-900 wrap-break-word dark:text-white">
+              <p className="pr-12 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
                 {event.Title}
-              </h1>
+              </p>
 
-              <div className="glass-surface mt-8 flex-1 rounded-2xl border-2 border-gray-500 p-4 text-sm text-zinc-700 dark:border-gray-500 dark:text-zinc-200">
+              <div className="glass-surface mt-4 flex-1 rounded-2xl border-2 border-gray-500 p-4 text-sm text-zinc-700 dark:border-gray-500 dark:text-zinc-200">
                 <div className="rounded-2xl border border-zinc-200 bg-white/55 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
                   <p className="font-medium text-zinc-900 dark:text-white">
                     {formatEventDateHeading(event)} · {formatTimeRange(event)}
@@ -143,7 +154,7 @@ export default function EventDetailPage() {
                       {event.Location}
                     </a>
                   </p>
-                  <p className="mt-2 text-zinc-600 dark:text-zinc-300">
+                  <p className="mt-3 text-zinc-600 dark:text-zinc-300">
                     {event.Description || "description/time/place"}
                   </p>
 
@@ -152,7 +163,7 @@ export default function EventDetailPage() {
                       {event.Category || "categories"}
                     </span>
                     {rel && !past ? (
-                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                      <span className="text-xs font-semibold text-amber-500">
                         {rel}
                       </span>
                     ) : (
@@ -164,51 +175,44 @@ export default function EventDetailPage() {
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  className="glass-surface h-11 rounded-xl border-2 border-gray-500 px-5 text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
-                >
-                  Add to Calendar
-                </button>
-                {user ? (
-                  <button
-                    type="button"
-                    onClick={toggle}
-                    className={`h-11 cursor-pointer rounded-xl border-2 px-5 text-sm font-medium transition duration-200 active:scale-[0.98] ${
-                      isRsvpd
-                        ? "border-amber-500 bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow-md hover:ring-2 hover:ring-amber-300/70 dark:border-amber-400 dark:bg-amber-500 dark:hover:bg-amber-600 dark:hover:ring-amber-200/50"
-                        : "border-gray-300 bg-white/85 text-zinc-900 shadow-sm hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
-                    }`}
-                  >
-                    {isRsvpd ? "Going ✓" : "RSVP"}
-                  </button>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="flex h-11 cursor-pointer items-center justify-center rounded-xl border-2 border-gray-300 bg-white/85 px-5 text-sm font-medium text-zinc-900 shadow-sm transition duration-200 hover:border-amber-500/90 hover:bg-amber-50 hover:shadow-md hover:ring-2 hover:ring-amber-400/40 active:scale-[0.98] dark:border-gray-600 dark:bg-zinc-900/80 dark:text-white dark:hover:border-amber-500 dark:hover:bg-amber-950/35 dark:hover:ring-amber-400/30"
-                  >
-                    Sign in to RSVP
-                  </Link>
-                )}
-              </div>
-
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
-                  {event.Category || "Ex Tag"}
-                </span>
-                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
-                  Ex Tag
-                </span>
-                <span className="rounded-xl border border-zinc-200 bg-white/55 px-4 py-2 text-xs font-medium text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200">
-                  Ex Tag
-                </span>
-              </div>
-
-              <div className="mt-auto pt-10 text-right">
+              {/* Bottom row: attendees display + back to home */}
+              <div className="mt-4 flex gap-3">
+                <div className="glass-surface flex h-11 flex-1 items-center gap-2 rounded-2xl border-2 border-gray-500 px-4 text-sm text-zinc-600 dark:border-gray-500 dark:text-zinc-300">
+                  <span className="shrink-0">
+                    {rsvpCount} {rsvpCount === 1 ? "going" : "going"}
+                  </span>
+                  {attendees.length > 0 && (
+                    <div className="flex -space-x-2">
+                      {attendees.slice(0, 6).map((a) =>
+                        a.photoURL ? (
+                          <img
+                            key={a.userId}
+                            src={a.photoURL}
+                            alt={a.displayName}
+                            title={a.displayName}
+                            className="h-6 w-6 rounded-full border-2 border-white object-cover dark:border-zinc-800"
+                          />
+                        ) : (
+                          <span
+                            key={a.userId}
+                            title={a.displayName}
+                            className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-amber-100 text-[9px] font-bold text-amber-700 dark:border-zinc-800 dark:bg-amber-900 dark:text-amber-300"
+                          >
+                            {a.displayName.charAt(0).toUpperCase()}
+                          </span>
+                        ),
+                      )}
+                      {attendees.length > 6 && (
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-[9px] font-semibold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
+                          +{attendees.length - 6}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <Link
                   href="/home"
-                  className="text-sm font-medium text-zinc-900 underline dark:text-white"
+                  className="glass-surface flex h-11 flex-1 items-center justify-center rounded-2xl border-2 border-gray-500 px-4 text-center text-sm font-medium text-zinc-900 transition hover:bg-gray-100 dark:border-gray-500 dark:text-white dark:hover:bg-[#222222]"
                 >
                   Back to home
                 </Link>
@@ -216,7 +220,7 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-      </article>
+      </div>
     </main>
   );
 }
