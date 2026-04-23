@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Navbar, EventGrid, ScheduleImportButton } from "@/components";
 import AddEventButton from "@/components/AddEventButton";
 import LandingSearchBar from "@/components/LandingSearchBar";
-import CategoriesStrip from "@/components/CategoriesStrip";
+import FilmStripCategories from "@/components/FilmStripCategories";
 import MiniMapPreview from "@/components/MiniMapPreview";
 import FriendsOnlineStrip from "@/components/FriendsOnlineStrip";
 import { type FilterState, EMPTY_FILTER } from "@/components/FilterDropdown";
@@ -72,8 +72,8 @@ export default function Home() {
                 />
             </div>
 
-            <div className="mt-[clamp(1.5rem,4vw,2.5rem)]">
-              <CategoriesStrip active={category} onChange={setCategory} />
+            <div className="mt-[clamp(1.5rem,4vw,2.5rem)] -mx-[clamp(1rem,3vw,1.5rem)] overflow-hidden rounded-2xl">
+              <FilmStripCategories active={category} onSelect={setCategory} />
             </div>
 
             <div id="events-feed" className="mt-[clamp(1.5rem,4vw,2.5rem)]">
