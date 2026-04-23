@@ -1,10 +1,10 @@
 export interface Event {
   id: string;
   Title: string;
-  Category: string;
+  Category?: string;
   Date: string;
   Start_time: string;
-  End_time: string;
+  End_time?: string;
   Location: string;
   Organization?: string;
   Description?: string;

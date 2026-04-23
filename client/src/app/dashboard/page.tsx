@@ -49,7 +49,7 @@ export default function DashboardPage() {
       event.Organization?.toLowerCase().includes(query) ||
       event.Location.toLowerCase().includes(query) ||
       event.Description?.toLowerCase().includes(query) ||
-      event.Category.toLowerCase().includes(query)
+      event.Category?.toLowerCase().includes(query)
     );
   });
 

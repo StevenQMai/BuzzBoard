@@ -3,10 +3,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 export interface Event {
   id: string;
   Title: string;
-  Category: string;
+  Category?: string;
   Date: string;
   Start_time: string;
-  End_time: string;
+  End_time?: string;
   Location: string;
   Organization?: string;
   Description?: string;
