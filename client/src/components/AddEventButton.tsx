@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import CategoryChips from "./CategoryChips";
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
 type Props = {
   onEventAddedAction?: () => void;
@@ -166,17 +168,17 @@ export default function AddEventButton({ onEventAddedAction, rightSlot }: Props)
                   />
                   <div className="space-y-3">
                     <div className="flex gap-3">
-                      <input
-                        type="date"
-                        className={`${inputClass} flex-1`}
+                      <DatePicker
                         value={form.Date}
-                        onChange={(e) => setForm((f) => ({ ...f, Date: e.target.value }))}
+                        onChange={(v) => setForm((f) => ({ ...f, Date: v }))}
+                        className="flex-1"
+                        placeholder="Date"
                       />
-                      <input
-                        type="time"
-                        className={`${inputClass} w-[120px]`}
+                      <TimePicker
                         value={form.Start_time}
-                        onChange={(e) => setForm((f) => ({ ...f, Start_time: e.target.value }))}
+                        onChange={(v) => setForm((f) => ({ ...f, Start_time: v }))}
+                        className="w-[130px]"
+                        placeholder="Time"
                       />
                     </div>
                     <input
@@ -215,11 +217,11 @@ export default function AddEventButton({ onEventAddedAction, rightSlot }: Props)
                       <label className="mb-1.5 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
                         End time
                       </label>
-                      <input
-                        type="time"
-                        className={`${inputClass} w-[140px]`}
+                      <TimePicker
                         value={form.End_time}
-                        onChange={(e) => setForm((f) => ({ ...f, End_time: e.target.value }))}
+                        onChange={(v) => setForm((f) => ({ ...f, End_time: v }))}
+                        className="w-[150px]"
+                        placeholder="End time"
                       />
                     </div>
 

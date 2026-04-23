@@ -19,10 +19,12 @@ import { scoreEventsForSchedule } from "@/lib/scheduleScoring";
 import { subscribeEventRsvps } from "@/lib/rsvpStore";
 import EventCard from "./EventCard";
 import EventQuickViewModal from "./EventQuickViewModal";
+import { type FilterState } from "./FilterDropdown";
 
 type Props = {
   search?: string;
   refreshKey?: number;
+  filter?: FilterState;
 };
 
 function matchesSearch(e: Event, q: string): boolean {
@@ -37,7 +39,32 @@ function matchesSearch(e: Event, q: string): boolean {
   );
 }
 
-export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
+function matchesFilter(e: Event, f: FilterState): boolean {
+  if (f.date && e.Date !== f.date) return false;
+  if (f.category && e.Category !== f.category) return false;
+  if (f.location && !e.Location?.toLowerCase().includes(f.location.toLowerCase())) return false;
+  if (f.time !== "any") {
+    const today = new Date();
+    const eventDate = new Date(e.Date + "T00:00:00");
+    const todayStr = today.toISOString().split("T")[0];
+    if (f.time === "today" && e.Date !== todayStr) return false;
+    if (f.time === "this-week") {
+      const weekOut = new Date(today);
+      weekOut.setDate(today.getDate() + 7);
+      if (eventDate < today || eventDate > weekOut) return false;
+    }
+    if (f.time === "this-weekend") {
+      const day = eventDate.getDay(); // 0=Sun, 6=Sat
+      if (day !== 0 && day !== 6) return false;
+      const weekendOut = new Date(today);
+      weekendOut.setDate(today.getDate() + 7);
+      if (eventDate < today || eventDate > weekendOut) return false;
+    }
+  }
+  return true;
+}
+
+export default function EventGrid({ search = "", refreshKey = 0, filter }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
   const [error, setError] = useState(false);
   const [quickViewEvent, setQuickViewEvent] = useState<Event | null>(null);
@@ -131,7 +158,9 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
   }, [visibleIds]);
 
   const { soon, rest, scheduleScores } = useMemo(() => {
-    const filtered = events.filter((e) => matchesSearch(e, search));
+    const filtered = events
+      .filter((e) => matchesSearch(e, search))
+      .filter((e) => !filter || matchesFilter(e, filter));
     const upcoming = filtered.filter((e) => !isPastEvent(e));
     const sortedChrono = sortEventsByStartAsc(upcoming);
 
@@ -156,7 +185,7 @@ export default function EventGrid({ search = "", refreshKey = 0 }: Props) {
     const soonIds = new Set(soonList.map((e) => e.id));
     const restList = sorted.filter((e) => !soonIds.has(e.id));
     return { soon: soonList, rest: restList, scheduleScores: scores };
-  }, [events, search, schedule]);
+  }, [events, search, schedule, filter]);
 
   if (error) {
     return (

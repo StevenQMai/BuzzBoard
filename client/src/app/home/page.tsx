@@ -8,6 +8,7 @@ import LandingSearchBar from "@/components/LandingSearchBar";
 import CategoriesStrip from "@/components/CategoriesStrip";
 import MiniMapPreview from "@/components/MiniMapPreview";
 import FriendsOnlineStrip from "@/components/FriendsOnlineStrip";
+import { type FilterState, EMPTY_FILTER } from "@/components/FilterDropdown";
 
 function HomeQuerySync({ onQuery }: { onQuery: (q: string) => void }) {
   const params = useSearchParams();
@@ -28,8 +29,14 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [category, setCategory] = useState("All");
+  const [eventFilter, setEventFilter] = useState<FilterState>(EMPTY_FILTER);
 
   const effectiveSearch = category === "All" ? search : `${search} ${category}`.trim();
+  // Merge CategoriesStrip category into filter (dropdown category takes precedence)
+  const effectiveFilter: FilterState = {
+    ...eventFilter,
+    category: eventFilter.category || (category !== "All" ? category : ""),
+  };
 
   return (
     <main className="min-h-screen bg-[#fefcf3] transition-colors duration-300 dark:bg-[#111111]">
@@ -56,7 +63,13 @@ export default function Home() {
             </h1>
 
             <div className="mt-[clamp(1.5rem,4vw,2.5rem)] flex justify-center">
-              <LandingSearchBar value={search} onChange={setSearch} showFilters />
+              <LandingSearchBar
+                  value={search}
+                  onChange={setSearch}
+                  showFilters
+                  filterValue={eventFilter}
+                  onFilterChange={setEventFilter}
+                />
             </div>
 
             <div className="mt-[clamp(1.5rem,4vw,2.5rem)]">
@@ -69,7 +82,7 @@ export default function Home() {
                 <div className="mb-[clamp(1.5rem,3vw,2.5rem)]">
                   <MiniMapPreview />
                 </div>
-                <EventGrid search={effectiveSearch} refreshKey={refreshKey} />
+                <EventGrid search={effectiveSearch} refreshKey={refreshKey} filter={effectiveFilter} />
               </div>
             </div>
           </div>

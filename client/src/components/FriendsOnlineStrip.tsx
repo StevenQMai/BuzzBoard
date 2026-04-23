@@ -37,7 +37,7 @@ export default function FriendsOnlineStrip() {
         {onlineFriends.map((friend) => {
           const initial = (friend.displayName || "U").charAt(0).toUpperCase();
           return (
-            <div key={friend.uid} className="flex items-center gap-2 rounded-xl bg-zinc-100/60 px-3 py-1.5 dark:bg-zinc-800/60">
+            <div key={friend.uid} className="flex items-center gap-2 rounded-xl border-2 border-zinc-300 bg-amber-50 px-3 py-1.5 dark:border-zinc-600 dark:bg-zinc-800">
               <div className="relative">
                 {friend.photoURL ? (
                   <img src={friend.photoURL} alt="" className="h-6 w-6 rounded-full object-cover" />
@@ -47,7 +47,7 @@ export default function FriendsOnlineStrip() {
                   </span>
                 )}
                 <span
-                  className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-[1.5px] border-white dark:border-zinc-800 ${statusDotClass(friend.presence)}`}
+                  className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-[1.5px] border-amber-50 dark:border-zinc-800 ${statusDotClass(friend.presence)}`}
                 />
               </div>
               <div>
