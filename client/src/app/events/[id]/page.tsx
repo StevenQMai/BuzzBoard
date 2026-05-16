@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import UserAvatar from "@/components/UserAvatar";
 import { fetchEventById, type Event } from "@/lib/utils";
 import {
   formatEventDateHeading,
@@ -183,25 +184,15 @@ export default function EventDetailPage() {
                   </span>
                   {attendees.length > 0 && (
                     <div className="flex -space-x-2">
-                      {attendees.slice(0, 6).map((a) =>
-                        a.photoURL ? (
-                          <img
-                            key={a.userId}
-                            src={a.photoURL}
-                            alt={a.displayName}
-                            title={a.displayName}
-                            className="h-6 w-6 rounded-full border-2 border-white object-cover dark:border-zinc-800"
-                          />
-                        ) : (
-                          <span
-                            key={a.userId}
-                            title={a.displayName}
-                            className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-amber-100 text-[9px] font-bold text-amber-700 dark:border-zinc-800 dark:bg-amber-900 dark:text-amber-300"
-                          >
-                            {a.displayName.charAt(0).toUpperCase()}
-                          </span>
-                        ),
-                      )}
+                      {attendees.slice(0, 6).map((a) => (
+                        <UserAvatar
+                          key={a.userId}
+                          photoURL={a.photoURL}
+                          name={a.displayName}
+                          size="h-6 w-6"
+                          className="border-2 border-white dark:border-zinc-800"
+                        />
+                      ))}
                       {attendees.length > 6 && (
                         <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-[9px] font-semibold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
                           +{attendees.length - 6}

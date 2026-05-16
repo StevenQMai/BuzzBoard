@@ -9,6 +9,7 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { ensureUserDoc } from "@/lib/friendsStore";
 import type { UserStatus } from "@/lib/presenceStore";
+import UserAvatar from "@/components/UserAvatar";
 
 function ownStatusDot(status: UserStatus): string {
   switch (status) {
@@ -164,17 +165,7 @@ export default function Navbar({
               className="inline-flex h-10 max-w-[200px] shrink-0 items-center gap-2 rounded-xl border-2 border-gray-400 px-3 text-sm leading-none transition hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-[#222222]"
             >
               <div className="relative shrink-0">
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt=""
-                    className="h-6 w-6 rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-300 text-xs font-semibold uppercase text-zinc-700 dark:bg-zinc-600 dark:text-zinc-100">
-                    {(user.email ?? "U").charAt(0)}
-                  </span>
-                )}
+                <UserAvatar photoURL={user.photoURL} name={user.displayName || user.email} size="h-6 w-6" />
                 <span className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-[1.5px] border-white dark:border-zinc-800 ${ownStatusDot(ownStatus)}`} />
               </div>
               <span className="min-w-0 truncate font-medium text-black dark:text-white">

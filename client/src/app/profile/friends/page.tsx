@@ -16,16 +16,7 @@ import {
 } from "@/lib/friendsStore";
 import Link from "next/link";
 
-function Avatar({ photoURL, name, size = "h-10 w-10" }: { photoURL: string | null; name: string; size?: string }) {
-  const initial = (name || "U").charAt(0).toUpperCase();
-  return photoURL ? (
-    <img src={photoURL} alt="" className={`${size} shrink-0 rounded-full object-cover`} />
-  ) : (
-    <span className={`${size} flex shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-300`}>
-      {initial}
-    </span>
-  );
-}
+import UserAvatar from "@/components/UserAvatar";
 
 function LocationBadge({ presence }: { presence: FriendPresence["presence"] }) {
   if (!presence?.isOnline) return null;
@@ -136,7 +127,7 @@ export default function FriendsPage() {
                 const isSent = sentTo.has(r.uid) || outgoingToUids.has(r.uid);
                 return (
                   <div key={r.uid} className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
-                    <Avatar photoURL={r.photoURL} name={r.displayName} size="h-9 w-9" />
+                    <UserAvatar photoURL={r.photoURL} name={r.displayName} size="h-9 w-9" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{r.displayName}</p>
                       <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{r.email}</p>
@@ -167,7 +158,7 @@ export default function FriendsPage() {
           <div className="space-y-2">
             {pendingRequests.map((req) => (
               <div key={req.id} className="flex items-center gap-3 rounded-xl px-2 py-2">
-                <Avatar photoURL={req.fromPhoto} name={req.fromName} size="h-9 w-9" />
+                <UserAvatar photoURL={req.fromPhoto} name={req.fromName} size="h-9 w-9" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.fromName}</p>
                   <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.fromEmail}</p>
@@ -195,7 +186,7 @@ export default function FriendsPage() {
           <div className="space-y-2">
             {outgoingRequests.map((req) => (
               <div key={req.id} className="flex items-center gap-3 rounded-xl px-2 py-2">
-                <Avatar photoURL={req.toPhoto} name={req.toName} size="h-9 w-9" />
+                <UserAvatar photoURL={req.toPhoto} name={req.toName} size="h-9 w-9" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-zinc-900 dark:text-white">{req.toName}</p>
                   <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{req.toEmail}</p>
@@ -257,7 +248,7 @@ function FriendRow({ friend, onRemove }: { friend: FriendPresence; onRemove: () 
   return (
     <div className="flex items-center gap-3 rounded-xl px-2 py-2.5 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
       <div className="relative">
-        <Avatar photoURL={friend.photoURL} name={friend.displayName} />
+        <UserAvatar photoURL={friend.photoURL} name={friend.displayName} />
         <span
           className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${statusDotClass(friend.presence)}`}
         />

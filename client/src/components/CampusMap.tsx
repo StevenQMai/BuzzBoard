@@ -77,9 +77,10 @@ function createGoldIcon(L: typeof import("leaflet")) {
 
 function createFriendIcon(L: typeof import("leaflet"), friend: FriendPresence) {
   const dotColor = statusDotStyle(friend.presence ?? null);
+  const initial = (friend.displayName || "U").charAt(0).toUpperCase();
   const inner = friend.photoURL
-    ? `<img src="${friend.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`
-    : `<span style="font-size:14px;font-weight:700;color:#92400e;">${(friend.displayName || "U").charAt(0).toUpperCase()}</span>`;
+    ? `<img src="${friend.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';this.parentNode.insertAdjacentHTML('afterbegin','<span style=\\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#92400e;\\">${initial}</span>')" />`
+    : `<span style="font-size:14px;font-weight:700;color:#92400e;">${initial}</span>`;
   const html = `
     <div style="position:relative;width:36px;height:36px;border-radius:50%;border:3px solid #f59e0b;background:#fef3c7;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
       ${inner}

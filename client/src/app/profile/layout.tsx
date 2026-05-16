@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Navbar } from "@/components";
+import UserAvatar from "@/components/UserAvatar";
 
 const sidebarSections = [
   {
@@ -118,13 +119,7 @@ export default function ProfileLayout({
     <>
       {/* User identity block */}
       <div className="mb-6 flex items-center gap-3 px-1">
-        {user.photoURL ? (
-          <img src={user.photoURL} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-300">
-            {initial}
-          </span>
-        )}
+        <UserAvatar photoURL={user.photoURL} name={user.displayName || user.email} />
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-zinc-900 dark:text-white">{displayName}</p>
           <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{user.email}</p>

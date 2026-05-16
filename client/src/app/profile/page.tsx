@@ -33,6 +33,7 @@ export default function ProfileAccountPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [currentStatus, setCurrentStatus] = useState<UserStatus>("online");
+  const [photoError, setPhotoError] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -148,11 +149,12 @@ export default function ProfileAccountPage() {
             <div className="relative h-28 bg-linear-to-r from-amber-400 via-yellow-300 to-orange-400 dark:from-amber-600 dark:via-yellow-500 dark:to-orange-600">
               {/* Avatar overlapping the banner */}
               <div className="absolute -bottom-10 left-6">
-                {user.photoURL ? (
+                {user.photoURL && !photoError ? (
                   <img
                     src={user.photoURL}
                     alt="Profile"
                     className="h-20 w-20 rounded-2xl border-4 border-white object-cover shadow-md dark:border-zinc-800"
+                    onError={() => setPhotoError(true)}
                   />
                 ) : (
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-white bg-amber-100 shadow-md dark:border-zinc-800 dark:bg-amber-900">
