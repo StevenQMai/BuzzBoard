@@ -123,6 +123,8 @@ export default function FilterDropdown({ value, onChange }: Props) {
             onChange={(v) => onChange({ ...value, date: v })}
             className="w-full"
             placeholder="Pick a date"
+            skipRelative
+            popupClassName="absolute top-0 left-[calc(100%+8px)]"
           />
         </div>
       )}

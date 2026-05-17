@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 type Props = {
   value: string; // YYYY-MM-DD
   onChange: (v: string) => void;
   className?: string;
   placeholder?: string;
+  popupClassName?: string;
+  skipRelative?: boolean;
 };
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -33,9 +34,8 @@ function formatDisplay(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export default function DatePicker({ value, onChange, className = "", placeholder = "Pick a date" }: Props) {
+export default function DatePicker({ value, onChange, className = "", placeholder = "Pick a date", popupClassName, skipRelative }: Props) {
   const [open, setOpen] = useState(false);
-  const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -43,8 +43,6 @@ export default function DatePicker({ value, onChange, className = "", placeholde
   const popupRef = useRef<HTMLDivElement>(null);
 
   const handleOpen = () => {
-    const rect = triggerRef.current?.getBoundingClientRect();
-    if (rect) setPopupPos({ top: rect.bottom + 6, left: rect.left });
     const d = parseLocal(value);
     if (d) { setViewYear(d.getFullYear()); setViewMonth(d.getMonth()); }
     setOpen(true);
@@ -95,11 +93,10 @@ export default function DatePicker({ value, onChange, className = "", placeholde
     setOpen(false);
   };
 
-  const popup = open && popupPos ? (
+  const popup = open ? (
     <div
       ref={popupRef}
-      className="glass-surface-strong fixed z-[200] w-[280px] rounded-2xl border-2 border-gray-500 p-4 shadow-xl dark:border-gray-500"
-      style={{ top: popupPos.top, left: popupPos.left }}
+      className={`glass-surface-strong z-[200] w-[280px] rounded-2xl border-2 border-gray-500 p-4 shadow-xl dark:border-gray-500 ${popupClassName ?? "absolute left-0 top-[calc(100%+6px)]"}`}
     >
       <div className="mb-3 flex items-center justify-between">
         <button type="button" onClick={prevMonth} className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-black/5 dark:hover:bg-white/10" aria-label="Previous month">
@@ -159,7 +156,7 @@ export default function DatePicker({ value, onChange, className = "", placeholde
   ) : null;
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={skipRelative ? className : `relative ${className}`}>
       <button
         ref={triggerRef}
         type="button"
@@ -172,7 +169,7 @@ export default function DatePicker({ value, onChange, className = "", placeholde
         </span>
       </button>
 
-      {typeof document !== "undefined" && createPortal(popup, document.body)}
+      {popup}
     </div>
   );
 }
